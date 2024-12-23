@@ -1,0 +1,65 @@
+<svg width="1152" height="384" viewBox="0 0 1152 384" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_28_2)">
+<rect width="1152" height="384" fill="url(#paint0_radial_28_2)"/>
+<g opacity="0.12">
+<line x1="234" y1="125.5" x2="1279" y2="125.5" stroke="white"/>
+<line x1="118" y1="381.5" x2="1395" y2="381.5" stroke="white"/>
+<line x1="234" y1="61.5" x2="1279" y2="61.5001" stroke="white"/>
+<line x1="234" y1="317.5" x2="1279" y2="317.5" stroke="white"/>
+<line x1="234" y1="253.5" x2="1279" y2="253.5" stroke="white"/>
+<line x1="234" y1="189.5" x2="1279" y2="189.5" stroke="white"/>
+<line x1="118.5" y1="664" x2="118.5" y2="-267" stroke="white"/>
+<line x1="698.5" y1="446" x2="698.5" y2="189" stroke="white"/>
+<line x1="1046.5" y1="446" x2="1046.5" y2="189" stroke="white"/>
+<line x1="466.5" y1="446" x2="466.5" y2="189" stroke="white"/>
+<line x1="350.5" y1="574" x2="350.5" y2="63" stroke="white"/>
+<line x1="234.5" y1="664" x2="234.5" y2="-99" stroke="white"/>
+<line x1="814.5" y1="446" x2="814.5" y2="189" stroke="white"/>
+<g clip-path="url(#clip1_28_2)">
+<mask id="path-15-inside-1_28_2" fill="white">
+<path d="M0 -3H119V382H0V-3Z"/>
+</mask>
+<line x1="-60.3501" y1="42.1236" x2="135.129" y2="-49.0299" stroke="white"/>
+<line x1="-60.3501" y1="273.512" x2="135.129" y2="182.359" stroke="white"/>
+<line x1="-60.3501" y1="157.818" x2="135.129" y2="66.6646" stroke="white"/>
+<line x1="-60.3501" y1="389.207" x2="135.129" y2="298.053" stroke="white"/>
+<line x1="-60.3501" y1="58.6514" x2="135.129" y2="-32.5021" stroke="white"/>
+<line x1="-60.3501" y1="290.04" x2="135.129" y2="198.887" stroke="white"/>
+<line x1="-60.3501" y1="174.346" x2="135.129" y2="83.1924" stroke="white"/>
+<line x1="-60.3501" y1="405.735" x2="135.129" y2="314.581" stroke="white"/>
+<line x1="-60.3501" y1="75.1791" x2="135.129" y2="-15.9743" stroke="white"/>
+<line x1="-60.3501" y1="306.568" x2="135.129" y2="215.414" stroke="white"/>
+<line x1="-60.3501" y1="190.874" x2="135.129" y2="99.7202" stroke="white"/>
+<line x1="-60.3501" y1="422.262" x2="135.129" y2="331.109" stroke="white"/>
+<line x1="-60.3501" y1="91.7069" x2="135.129" y2="0.553433" stroke="white"/>
+<line x1="-60.3501" y1="323.096" x2="135.129" y2="231.942" stroke="white"/>
+<line x1="-60.3501" y1="207.401" x2="135.129" y2="116.248" stroke="white"/>
+<line x1="-60.3501" y1="438.79" x2="135.129" y2="347.637" stroke="white"/>
+<line x1="-60.3501" y1="108.235" x2="135.129" y2="17.0813" stroke="white"/>
+<line x1="-60.3501" y1="339.624" x2="135.129" y2="248.47" stroke="white"/>
+<line x1="-60.3501" y1="223.929" x2="135.129" y2="132.776" stroke="white"/>
+<line x1="-60.3501" y1="455.318" x2="135.129" y2="364.164" stroke="white"/>
+<line x1="-60.3501" y1="124.763" x2="135.129" y2="33.609" stroke="white"/>
+<line x1="-60.3501" y1="356.151" x2="135.129" y2="264.998" stroke="white"/>
+<line x1="-60.3501" y1="240.457" x2="135.129" y2="149.303" stroke="white"/>
+<line x1="-60.3501" y1="471.846" x2="135.129" y2="380.692" stroke="white"/>
+<line x1="-60.3501" y1="141.29" x2="135.129" y2="50.1368" stroke="white"/>
+<line x1="-60.3501" y1="372.679" x2="135.129" y2="281.526" stroke="white"/>
+<line x1="-60.3501" y1="256.985" x2="135.129" y2="165.831" stroke="white"/>
+</g>
+<path d="M0 -2H119V-4H0V-2ZM119 381H0V383H119V381Z" fill="white" mask="url(#path-15-inside-1_28_2)"/>
+</g>
+</g>
+<defs>
+<radialGradient id="paint0_radial_28_2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(576 192) rotate(90) scale(448 1344)">
+<stop stop-color="#5B21B6"/>
+<stop offset="1" stop-color="#280F50"/>
+</radialGradient>
+<clipPath id="clip0_28_2">
+<rect width="1152" height="384" fill="white"/>
+</clipPath>
+<clipPath id="clip1_28_2">
+<path d="M0 -3H119V382H0V-3Z" fill="white"/>
+</clipPath>
+</defs>
+</svg>
