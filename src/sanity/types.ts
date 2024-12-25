@@ -169,7 +169,7 @@ export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/queries.ts
 // Variable: PROJECT_QUERY
-// Query: *[_type == "project" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)] {        _id,        title,        slug,        _createdAt,        views,        description,        image    }
+// Query: *[_type == "project" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)][0...6] {        _id,        title,        slug,        _createdAt,        views,        description,        image    }
 export type PROJECT_QUERYResult = Array<{
   _id: string;
   title: null;
@@ -208,7 +208,7 @@ export type PROJECT_BY_ID_QUERYResult = {
   pitch: string | null;
 } | null;
 // Variable: PROJECT_ANOTHERS_QUERY
-// Query: *[_type == "project" && defined(slug.current) && _id != $id | order(_createdAt desc)] {        _id,        title,        slug,        _createdAt,        views,        description,        image    }
+// Query: *[_type == "project" && _id != $id][0...3]{        _id,        title,        slug,        _createdAt,        views,        description,        image    }
 export type PROJECT_ANOTHERS_QUERYResult = Array<{
   _id: string;
   title: string | null;
@@ -223,8 +223,8 @@ export type PROJECT_ANOTHERS_QUERYResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n    *[_type == \"project\" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)] {\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_QUERYResult;
+    "\n    *[_type == \"project\" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)][0...6] {\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_QUERYResult;
     "\n    *[_type == \"project\" && _id == $id][0]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image,\n        pitch\n    }\n": PROJECT_BY_ID_QUERYResult;
-    "\n    *[_type == \"project\" && defined(slug.current) && _id != $id | order(_createdAt desc)] {\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_ANOTHERS_QUERYResult;
+    "\n    *[_type == \"project\" && _id != $id][0...3]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_ANOTHERS_QUERYResult;
   }
 }

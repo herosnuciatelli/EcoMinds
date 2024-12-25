@@ -1,11 +1,21 @@
 'use client'
 
-import { Slide1, Slide2, Slide3 } from "@/constants";
+import * as constants from "@/constants";
 import Image from "next/image";
+import React from "react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const slides = [ Slide1, Slide2, Slide3 ]
+const slides = [ 
+    constants.Slide1,
+    constants.Slide2,
+    constants.Slide3
+]
+const slidesPhone = [
+    constants.Slide1Phone,
+    constants.Slide2Phone,
+    constants.Slide3Phone
+]
 
 function Slide({ slide }: { slide: any }) {
     return (
@@ -22,6 +32,7 @@ function Slide({ slide }: { slide: any }) {
 }
 
 export function Slides() {
+    const [width, setWidth] = React.useState(window.innerWidth)
     return (
         <Swiper
             modules={[Pagination, Autoplay]}
@@ -34,10 +45,23 @@ export function Slides() {
                 delay: 2000,
                 pauseOnMouseEnter: true
             }}
+            onResize={() => {
+                setWidth(window.innerWidth)
+            }}
         >
-            {slides.map((slide, i) => <SwiperSlide key={i}>
-                <Slide slide={slide}  />
-            </SwiperSlide>)}
+            {width > 1000 ?
+                slides.map((slide, i) => (
+                    <SwiperSlide key={i}>
+                        <Slide slide={slide}  />
+                    </SwiperSlide>
+                ))
+                :
+                slidesPhone.map((slide, i) => (
+                    <SwiperSlide key={i}>
+                        <Slide slide={slide}  />
+                    </SwiperSlide>
+                ))
+            }
         </Swiper>
     )
 }

@@ -8,6 +8,7 @@ import { PROJECT_BY_ID_QUERYResult } from "@/sanity/types"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { View } from "@/components/View"
+import { AnotherProjects } from "@/components/AnotherProjects"
 
 const md = markdownit()
 
@@ -63,10 +64,10 @@ export default async function Page({ params }: { params: Promise<{ id: string}>}
                     <hr className="border-stone-300" />
                     <div className="py-3">
                         <Suspense fallback={<Skeleton className="h-80 my-3" />}>
-                            <View id={id} />
+                            <AnotherProjects id={id} />
                         </Suspense>
                     </div>
-
+                    <View id={id} views={post.views || 100} />
                 </section>
             </MaxWidthWrapper>
 
