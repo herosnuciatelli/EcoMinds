@@ -8,7 +8,7 @@ function ProjectCard({
    post
 }: { post: ProjectCardType}) {
     return (
-        <Card className="max-w-96 w-full hover:border-violet-950 transition-all hover:bg-violet-50">
+        <Card className="max-w-96 group w-full hover:border-violet-950 transition-all hover:bg-violet-50">
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <h3 className="font-semibold text-sm">Sustentabilidade</h3>
@@ -18,7 +18,7 @@ function ProjectCard({
                         <span className="text-sm font-semibold">{post.views}</span>
                     </div>
                 </div>
-                <Link className="group flex flex-col gap-1.5" href={`/project/${post._id}`}>
+                <Link className="flex flex-col gap-1.5" href={`/project/${post._id}`}>
                     <CardTitle className="text-xl font-bold group-hover:underline line-clamp-1">{post.title}</CardTitle>
                     <CardDescription className="line-clamp-4 h-20">{post.description}</CardDescription>
                 </Link>

@@ -3,7 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import 'easymde/dist/easymde.min.css'
 
-import { ClerkProvider } from '@clerk/nextjs'
+import { Toaster } from "@/components/ui/toaster"
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,14 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
       <html lang="pt-br">
         <body
           className={`${jakartaSans.className} light antialiased`}
         >
           {children}
+          <Toaster />
         </body>
       </html>
-    </ClerkProvider>
   );
 }
