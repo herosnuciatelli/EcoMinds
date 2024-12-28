@@ -11,5 +11,5 @@ export {
     Slide3,
     Slide1Phone,
     Slide2Phone,
-    Slide3Phone
+    Slide3Phone,
 }

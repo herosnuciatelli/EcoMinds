@@ -8,8 +8,9 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-  } from "@/components/ui/popover"  
-import { IconUserFilled } from "@tabler/icons-react";
+  } from "@/components/ui/popover"
+import {IconLogout} from "@tabler/icons-react";
+import { SignOutButton } from "./auth/SignOutButton";
 
 export function LogoNavbar() {
     return <Link href={'/'}>
@@ -42,12 +43,19 @@ export async function Navbar() {
                                 <div>
                                 <Popover>
                                     <PopoverTrigger>
-                                        <Avatar className="hover:opacity-85 border border-stone-900">
-                                            <AvatarImage />
-                                            <AvatarFallback><IconUserFilled /></AvatarFallback>
+                                        <Avatar className="hover:opacity-85 border border-stone-300">
+                                            <AvatarImage src={'/user-profile.svg'} className={'object-contain'} />
+                                            <AvatarFallback>EM</AvatarFallback>
                                         </Avatar>
                                     </PopoverTrigger>
-                                    <PopoverContent>Place content for the popover here.</PopoverContent>
+                                    <PopoverContent className={'w-max divide-y flex flex-col gap-3 mr-3 md:mr-0'}>
+                                        <span className={'text-sm font-bold'}>{user.email}</span>
+                                        <div className={'pt-3'}>
+                                            <SignOutButton className={'w-full'} variant={'outline'} size={'sm'}>
+                                                <IconLogout /> Sair
+                                            </SignOutButton>
+                                        </div>
+                                    </PopoverContent>
                                 </Popover>
                                 </div>
                             </>

@@ -34,7 +34,6 @@ export const project = defineType({
         defineField({
             name: 'image',
             type: 'url',
-            validation: (rule) => rule.required()
         }),
         defineField({
             name: 'pitch',

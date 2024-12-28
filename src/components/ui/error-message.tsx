@@ -11,7 +11,7 @@ function ErrorWarning({ children }: {
 function Title({ children }: {
     children: React.ReactNode
 }) {
-    return <span className="text-rose-700 text-sm">{children}</span>
+    return <span className="text-rose-700 text-xs">{children}</span>
 }
 
 ErrorWarning.Title = Title

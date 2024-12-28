@@ -32,7 +32,7 @@ function Slide({ slide }: { slide: any }) {
 }
 
 export function Slides() {
-    const [width, setWidth] = React.useState(window.innerWidth)
+    const [width, setWidth] = React.useState(window?.innerWidth || 0)
     return (
         <Swiper
             modules={[Pagination, Autoplay]}
