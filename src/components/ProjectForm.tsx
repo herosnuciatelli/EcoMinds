@@ -141,7 +141,7 @@ export function ProjectForm() {
                     )}
                 </div>
                 <div>
-                    <label htmlFor="projectFile" className='text-sm font-bold'>Projeto <span className='text-rose-600'>.pdf</span></label>
+                    <label htmlFor="projectFile" className='text-sm font-bold'>Projeto (.pdf)</label>
                     <div
                         onClick={() => document.getElementById('projectFile')?.click()}
                         className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'

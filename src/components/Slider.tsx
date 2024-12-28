@@ -1,6 +1,7 @@
 'use client'
 
 import * as constants from "@/constants";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
 import React from "react";
 import { Pagination, Autoplay } from "swiper/modules";
@@ -17,7 +18,7 @@ const slidesPhone = [
     constants.Slide3Phone
 ]
 
-function Slide({ slide }: { slide: any }) {
+function Slide({ slide }: { slide: StaticImport }) {
     return (
         <div>
             <Image 
@@ -32,7 +33,7 @@ function Slide({ slide }: { slide: any }) {
 }
 
 export function Slides() {
-    const [width, setWidth] = React.useState(window?.innerWidth || 0)
+    const [width, setWidth] = React.useState(0)
     return (
         <Swiper
             modules={[Pagination, Autoplay]}
@@ -49,7 +50,7 @@ export function Slides() {
                 setWidth(window.innerWidth)
             }}
         >
-            {width > 1000 ?
+            {width > 1000 || width === 0 ?
                 slides.map((slide, i) => (
                     <SwiperSlide key={i}>
                         <Slide slide={slide}  />
