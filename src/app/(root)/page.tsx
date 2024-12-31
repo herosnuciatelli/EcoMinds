@@ -27,14 +27,12 @@ export default async function Home({ searchParams }: {
             {query ? `Resultados de busca para "${query}"`: "Todos os Projetos"}
           </h2>
           <ul className="py-3 grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {posts.length > 0 ? (
-              posts.map((post: ProjectCardType, index: number) => (
+            {posts.length > 0 ? posts.map((post: ProjectCardType) => (
                 <ProjectCard 
                   post={post}
-                  key={index}
+                  key={post._id}
                 />
-              ))
-            ): (
+              )): (
               <p className="font-semibold text-sm">Nenhum projeto encontrado.</p>
             )}
           </ul>

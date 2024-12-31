@@ -39,6 +39,14 @@ export const project = defineType({
             name: 'pitch',
             type: 'markdown',
         }),
+        defineField({
+            name: 'project',
+            type: 'url'
+        }),
+        defineField({
+            name: 'video',
+            type: 'url'
+        })
     ],
     preview: {
         select: {

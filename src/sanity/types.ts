@@ -143,6 +143,8 @@ export type Project = {
   description?: string;
   image?: string;
   pitch?: string;
+  project?: string;
+  video?: string;
 };
 
 export type Slug = {
@@ -161,6 +163,7 @@ export type Author = {
   name?: string;
   username?: string;
   image?: string;
+  user_id?: string;
 };
 
 export type Markdown = string;
@@ -196,7 +199,7 @@ export type PROJECT_QUERYResult = Array<{
   image: string | null;
 }>;
 // Variable: PROJECT_BY_ID_QUERY
-// Query: *[_type == "project" && _id == $id][0]{        _id,        title,        slug,        _createdAt,        views,        description,        image,        pitch    }
+// Query: *[_type == "project" && _id == $id][0]{        _id,        title,        slug,        _createdAt,        views,        description,        image,        pitch,        project,        video    }
 export type PROJECT_BY_ID_QUERYResult = {
   _id: string;
   title: string | null;
@@ -206,10 +209,12 @@ export type PROJECT_BY_ID_QUERYResult = {
   description: string | null;
   image: string | null;
   pitch: string | null;
+  project: string | null;
+  video: string | null;
 } | null;
-// Variable: PROJECT_ANOTHERS_QUERY
+// Variable: PROJECT_OTHERS_QUERY
 // Query: *[_type == "project" && _id != $id][0...3]{        _id,        title,        slug,        _createdAt,        views,        description,        image    }
-export type PROJECT_ANOTHERS_QUERYResult = Array<{
+export type PROJECT_OTHERS_QUERYResult = Array<{
   _id: string;
   title: string | null;
   slug: Slug | null;
@@ -218,13 +223,19 @@ export type PROJECT_ANOTHERS_QUERYResult = Array<{
   description: string | null;
   image: string | null;
 }>;
+// Variable: AUTHOR_QUERY
+// Query: *[_type == "author" && user_id == $user_id][0]{        _id    }
+export type AUTHOR_QUERYResult = {
+  _id: string;
+} | null;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n    *[_type == \"project\" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)][0...6] {\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_QUERYResult;
-    "\n    *[_type == \"project\" && _id == $id][0]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image,\n        pitch\n    }\n": PROJECT_BY_ID_QUERYResult;
-    "\n    *[_type == \"project\" && _id != $id][0...3]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_ANOTHERS_QUERYResult;
+    "\n    *[_type == \"project\" && _id == $id][0]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image,\n        pitch,\n        project,\n        video\n    }\n": PROJECT_BY_ID_QUERYResult;
+    "\n    *[_type == \"project\" && _id != $id][0...3]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_OTHERS_QUERYResult;
+    "\n    *[_type == \"author\" && user_id == $user_id][0]{\n        _id\n    }\n": AUTHOR_QUERYResult;
   }
 }

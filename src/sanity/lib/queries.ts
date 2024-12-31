@@ -21,11 +21,13 @@ export const PROJECT_BY_ID_QUERY = defineQuery(`
         views,
         description,
         image,
-        pitch
+        pitch,
+        project,
+        video
     }
 `)
 
-export const PROJECT_ANOTHERS_QUERY = defineQuery(`
+export const PROJECT_OTHERS_QUERY = defineQuery(`
     *[_type == "project" && _id != $id][0...3]{
         _id,
         title,
@@ -34,5 +36,11 @@ export const PROJECT_ANOTHERS_QUERY = defineQuery(`
         views,
         description,
         image
+    }
+`)
+
+export const AUTHOR_QUERY = defineQuery(`
+    *[_type == "author" && user_id == $user_id][0]{
+        _id
     }
 `)

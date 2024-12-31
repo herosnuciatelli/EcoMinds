@@ -23,6 +23,10 @@ export const author = defineType({
             name: 'image',
             type: 'url',
         }),
+        defineField({
+            name: 'user_id',
+            type: 'string'
+        })
     ],
     preview: {
         select: {

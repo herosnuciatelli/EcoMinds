@@ -13,39 +13,36 @@ import { AnotherProjects } from "@/components/AnotherProjects"
 const md = markdownit()
 
 
-export default async function Page({ params }: { params: Promise<{ id: string}>}) {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id
 
-    const post: PROJECT_BY_ID_QUERYResult =  await client.fetch(PROJECT_BY_ID_QUERY, { id })
+    const post: PROJECT_BY_ID_QUERYResult = await client.fetch(PROJECT_BY_ID_QUERY, { id })
 
     if (!post) return notFound()
 
     const parsedContent = md.render(post.pitch || '')
-    
+
 
     return (
         <>
-
-            <section className="h-96 bg-[url('/project-banner.svg')] bg-no-repeat w-full my-5 relative bg-cover grid place-items-center">
+            <MaxWidthWrapper>
+                <section className="h-96 bg-[url('/project-banner.svg')] rounded-2xl bg-no-repeat w-full my-5 relative bg-cover grid place-items-center">
                     <div>
                         <div className="flex flex-col gap-1.5 items-center">
                             <h2 className="text-2xl lg:text-4xl text-white font-bold bg-stone-950 w-max p-3">{post.title}</h2>
                         </div>
                     </div>
-            </section>
-
-
-            <MaxWidthWrapper>            
+                </section>
                 <section>
                     <p className="text-justify text-stone-900">{post.description}</p>
                 </section>
                 <section className="py-10">
-                    { post.image &&
-                        <img 
-                            src={post.image} 
-                            width={100} 
-                            height={100} 
-                            alt="thumbnail" 
+                    {post.image &&
+                        <img
+                            src={post.image}
+                            width={100}
+                            height={100}
+                            alt="thumbnail"
                             className="w-full h-80 object-cover rounded-xl"
                         />
                     }
@@ -55,9 +52,9 @@ export default async function Page({ params }: { params: Promise<{ id: string}>}
                         {parsedContent ? (
                             <article
                                 className="flex flex-col gap-1.5 py-3 text-justify prose break-all"
-                                dangerouslySetInnerHTML={{ __html: parsedContent}}
+                                dangerouslySetInnerHTML={{ __html: parsedContent }}
                             />
-                        ): (
+                        ) : (
                             <p className="">Sem detalhes da apresentação</p>
                         )}
                     </div>
@@ -67,7 +64,7 @@ export default async function Page({ params }: { params: Promise<{ id: string}>}
                             <AnotherProjects id={id} />
                         </Suspense>
                     </div>
-                    <View id={id} views={post.views || 100} />
+                    <View id={id} views={post.views || 1} />
                 </section>
             </MaxWidthWrapper>
 

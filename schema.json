@@ -769,6 +769,20 @@
           "type": "string"
         },
         "optional": true
+      },
+      "project": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "video": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
       }
     }
   },
@@ -859,6 +873,13 @@
         "optional": true
       },
       "image": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "user_id": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

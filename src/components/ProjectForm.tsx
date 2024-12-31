@@ -1,193 +1,285 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { Button } from './ui/button'
 import MDEditor from "@uiw/react-md-editor"
+import { redirect } from 'next/navigation'
 
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-
-import { ErrorsWarnings } from '@/utils/errors-warnings'
-import { ErrorWarning } from './ui/error-message'
 import { Textarea } from './ui/textarea'
-import { IconClipboardCopy, IconPhotoScan } from '@tabler/icons-react'
+import { IconClipboardCopy, IconCloudUp, IconPhotoScan } from '@tabler/icons-react'
+import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from './ui/form'
+import {createPitch} from "@/lib/actions/pitch";
 
-const formSchema = z.object({
-    title: z.string()
-        .min(1, ErrorsWarnings.emptyField)
-        .max(100, ErrorsWarnings.overCaractersField)
-        .trim(),
-    description: z.string()
-        .min(1, ErrorsWarnings.emptyField)
-        .max(1000, ErrorsWarnings.overCaractersField)
-        .trim(),
-    image: z.instanceof(FileList)
-        .transform(list => list.item(0))
-        .refine((file) => {
-            const MAX_UPLOAD_SIZE = 1024 * 1024 * 5
-            return !file || file.size <= MAX_UPLOAD_SIZE
-        }, 'O arquivo deve ter menos de 5MB')
-        .refine((file) => {
-            if (!file?.name) return false
+import { formSchema } from '@/types/Projects'
+import { createClient } from '@/utils/supabase/client'
 
-            const extensionsAvaliable = ['.svg', '.png', '.jpg']
-
-            for (const extension of extensionsAvaliable) {
-                if (file.name.endsWith(extension)) {
-                    return true
-                }
-            }
-
-            return false
-        }, 'A extensão não é válida. Aceitamos apenas .svg, .png, .jpg'),
-    projectFile: z.instanceof(FileList)
-        .transform(list => list.item(0))
-        .refine((file) => {
-            const MAX_UPLOAD_SIZE = 1024 * 1024 * 20
-            return !file || file.size <= MAX_UPLOAD_SIZE
-        }, 'O arquivo deve ter menos de 20MB')
-        .refine((file) => {
-            if (!file?.name) return false
-
-            const extensionAvaliable = '.pdf'
-
-            if (file.name.endsWith(extensionAvaliable)) {
-                return true
-            }
-
-            return false
-        }, 'A extensão não é válida. Aceitamos apenas .pdf'),
-
-})
+import { parseNameToStorage } from '@/lib/utils'
+import { useTransition } from 'react'
 
 export function ProjectForm() {
-    const [pitch, setPitch] = useState("")
-    const [image, setImage] = useState("")
     const { toast } = useToast()
+    const [isLoading, startTransition] = useTransition()
 
-    const { handleSubmit, formState, register } = useForm<z.infer<typeof formSchema>>({
+    const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: ''
+            title: '',
+            description: '',
+            pitch: '',
         }
     })
+    const { handleSubmit } = form
 
-    const handleCreateProject = ({ title }: z.infer<typeof formSchema>) => {
+    const handleCreateProject = async (projectData: z.infer<typeof formSchema>) => {
         // TODO: submit content to right ways
-        toast({
-            title,
-            description: "O projeto foi criado com sucesso.",
+        startTransition(async () => {
+            const supabase = createClient()
+            const { 
+                description,
+                image,
+                pitch,
+                title,
+                projectFile,
+                videoURL
+            } = projectData
+            
+            try {
+    
+                const imageStorageName = parseNameToStorage(image.name)
+                if (imageStorageName) {
+                    const { error } = await supabase.storage.from('images').upload(imageStorageName, image)
+                    if (error) throw new Error(error.message)
+                }
+                
+                const fileStorageName = parseNameToStorage(projectFile?.name)
+                if (fileStorageName && projectFile) {
+                    const { error } = await supabase.storage.from('projects').upload(fileStorageName, projectFile)
+                    if (error) throw new Error(error.message)
+                }
+    
+                const result = await createPitch({ 
+                    description, 
+                    image: imageStorageName, 
+                    pitch, 
+                    title, 
+                    project: imageStorageName, 
+                    videoURL
+                })
+    
+                if (result.status = "SUCCESS") {
+                    toast({
+                        title: projectData.title,
+                        description: "O projeto foi criado com sucesso.",
+                        variant: 'success'
+                    })
+                }
+    
+                setTimeout(() => {
+                    redirect(`/project/${result._id}`)
+                }, 800)
+            } catch (error) {
+                const { message } = error as { message: string }
+    
+                toast({
+                    title: 'Erro: Erro ao armazenar os arquivos.',
+                    description: message,
+                    variant: 'destructive'
+                })
+            }
         })
     }
 
     return (
-        <form onSubmit={handleSubmit(handleCreateProject)} className='mx-auto max-w-3xl'>
-            <div className='py-1.5'>
-                <label htmlFor="title" className='text-sm font-bold'>Título</label>
-                <Input
-                    id='title'
-                    placeholder='Título do Projeto'
-                    {...register('title')}
-                />
-                {formState.errors.title && (
-                    <ErrorWarning>
-                        <ErrorWarning.Title>{formState.errors.title.message}</ErrorWarning.Title>
-                    </ErrorWarning>
-                )}
-            </div>
+        <Form {...form}>
+            <form onSubmit={handleSubmit(handleCreateProject)} className='mx-auto max-w-3xl py-3'>
+                <div className='py-1.5'>
+                    <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className='text-sm font-bold' htmlFor="title">Título</FormLabel>
+                                <FormControl>
+                                    <Input id='title' placeholder='Título do Projeto' {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
-            <div className='py-1.5'>
-                <label htmlFor="description" className='text-sm font-bold'>Descrição</label>
-                <Textarea
-                    id='description'
-                    placeholder='Este projeto...'
-                    rows={5}
-                    {...register('description')}
-                />
-                {formState.errors.description && (
-                    <ErrorWarning>
-                        <ErrorWarning.Title>{formState.errors.description.message}</ErrorWarning.Title>
-                    </ErrorWarning>
-                )}
-            </div>
+                <div className='py-1.5'>
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className='text-sm font-bold' htmlFor="description">Descrição</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        id='description'
+                                        placeholder='Este projeto...'
+                                        rows={5}
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
-            <div className='py-1.5 grid grid-cols-2 gap-x-3'>
-                <div>
-                    <label htmlFor="image" className='text-sm font-bold'>Imagem</label>
-                    <div
-                        onClick={() => document.getElementById('image')?.click()}
-                        className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'
-                    >
-                        <span className='text-sm'>Adicionar Imagem.</span>
+                <div className='py-1.5'>
+                    <FormField
+                        control={form.control}
+                        name="videoURL"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className='text-sm font-bold' htmlFor="videoURL">Vídeo Link [opcional]</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        id='videoURL'
+                                        placeholder='https://example.com'
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
 
-                        <IconPhotoScan size={40} stroke={1} />
+                <div className='py-1.5'>
+                    <FormField
+                        control={form.control}
+                        name="pitch"
+                        render={({ field }) => {
+                            return (
+                                <FormItem>
+                                    <FormLabel className='text-sm font-bold' htmlFor="md">Apresentação</FormLabel>
+                                    <FormControl>
+                                        <MDEditor
+                                            id='md'
+                                            height={300}
+                                            style={{
+                                                borderRadius: 8,
+                                                overflow: 'hidden'
+                                            }}
+                                            previewOptions={{
+                                                disallowedElements: ["style"]
+                                            }}
+                                            textareaProps={{
+                                                placeholder: "Descreva seu projeto."
+                                            }}
+                                            value={field.value}
+                                            onChange={(value) => {
+                                                form.setValue('pitch', value || '')
+                                            }}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                        )}}
+                    />
+                </div>
 
-                        <Input
-                            id='image'
-                            placeholder='Este projeto...'
-                            type='file'
-                            className='hidden'
-                            {...register('image')}
+                <div className='py-1.5 grid md:grid-cols-2 gap-3'>
+                    <div>
+                        <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => {
+                                const handleFileInputChange = (
+                                    event: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                    const files = event.target.files
+                                    if (files) {
+                                        form.setValue('image', files[0])
+                                    }
+                                }
+
+                                return (
+                                    <FormItem>
+                                        <FormLabel className='text-sm font-bold' htmlFor="image">Imagem</FormLabel>
+                                        <div
+                                            onClick={() => document.getElementById('image')?.click()}
+                                            className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'
+                                        >
+                                            <span className='text-sm'>{field.value?.name ? field.value.name : 'Adicionar Imagem.'}</span>
+
+                                            <IconPhotoScan size={40} stroke={1} />
+                                            <FormControl>
+                                                <input
+                                                    id='image'
+                                                    placeholder='Este projeto...'
+                                                    type='file'
+                                                    className='hidden'
+                                                    onChange={handleFileInputChange}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage />
+                                    </FormItem>
+                                )
+                            }}
                         />
                     </div>
+                    <div>
+                        <FormField
+                            control={form.control}
+                            name="projectFile"
+                            render={({ field }) => {
+                                const handleFileInputChange = (
+                                    event: React.ChangeEvent<HTMLInputElement>,
+                                ) => {
+                                    const files = event.target.files
+                                    if (files) {
+                                        form.setValue('projectFile', files[0])
+                                    }
+                                }
 
-                    {formState.errors.image && (
-                        <ErrorWarning>
-                            <ErrorWarning.Title>{formState.errors.image.message}</ErrorWarning.Title>
-                        </ErrorWarning>
-                    )}
-                </div>
-                <div>
-                    <label htmlFor="projectFile" className='text-sm font-bold'>Projeto (.pdf)</label>
-                    <div
-                        onClick={() => document.getElementById('projectFile')?.click()}
-                        className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'
-                    >
-                        <span className='text-sm'>Adicionar Projeto.</span>
+                                return (
+                                    <FormItem>
+                                        <FormLabel className='text-sm font-bold' htmlFor="projectFile">Projeto (.pdf)[opcional]</FormLabel>
+                                        <div
+                                            onClick={() => document.getElementById('projectFile')?.click()}
+                                            className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'
+                                        >
+                                            <span className='text-sm'>{field.value?.name ? field.value.name : 'Adicionar Projeto.'}</span>
 
-                        <IconClipboardCopy size={40} stroke={1} />
-
-                        <Input
-                            id='projectFile'
-                            placeholder='Este projeto...'
-                            type='file'
-                            className='hidden'
-                            {...register('projectFile')}
+                                            <IconClipboardCopy size={40} stroke={1} />
+                                            <FormControl>
+                                                <input
+                                                    id='projectFile'
+                                                    type='file'
+                                                    className='hidden'
+                                                    onChange={handleFileInputChange}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                        <FormMessage />
+                                    </FormItem>
+                                )
+                            }}
                         />
                     </div>
-
-                    {formState.errors.image && (
-                        <ErrorWarning>
-                            <ErrorWarning.Title>{formState.errors.image.message}</ErrorWarning.Title>
-                        </ErrorWarning>
-                    )}
                 </div>
-            </div>
-            {/* <MDEditor 
-                value={pitch}
-                onChange={(value) => setPitch(value as string)}
-                height={300}
-                style={{
-                    borderRadius: 8,
-                    overflow: 'hidden'
-                }}
-                previewOptions={{
-                    disallowedElements: ["style"]
-                }}
-                textareaProps={{
-                    placeholder: "Resumidamente descreva seu projeto e seu objetivo."
-                }}
-            /> */}
+                <div className='grid'>
+                    <Button
+                        type='submit'
+                        className='mt-5 mx-auto shadow-2xl'
+                        isLoading={isLoading}
+                        disabled={isLoading}
+                    >
+                        Enviar <IconCloudUp />
+                    </Button>
+                </div>
+            </form>
 
-            <Button
-                type='submit'
-                className='mt-3'
-            >
-                Criar
-            </Button>
-        </form>
+        </Form>
     )
 }

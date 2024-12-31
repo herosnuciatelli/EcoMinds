@@ -4,6 +4,7 @@ import Slide3 from './slides/slide3.svg'
 import Slide1Phone from './slides/slide1-phone.svg'
 import Slide2Phone from './slides/slide2-phone.svg'
 import Slide3Phone from './slides/slide3-phone.svg'
+import StyledBackground from './slides/styledBackground.svg'
 
 export {
     Slide1,
@@ -12,4 +13,5 @@ export {
     Slide1Phone,
     Slide2Phone,
     Slide3Phone,
+    StyledBackground
 }
