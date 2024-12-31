@@ -1,14 +1,9 @@
 import { MaxWidthWrapper } from "@/components/MaxWidthWrapper"
 import { ProjectForm } from "@/components/ProjectForm"
-import { createClient } from "@/utils/supabase/server"
-import { redirect } from "next/navigation"
+import { handleCreateProject } from "../actions/create-project"
+import { IconCloudUp } from "@tabler/icons-react"
 
 export default async function Page() {
-    const supabase = await createClient()
-    const user = await supabase.auth.getUser()
-
-    if (!user) redirect('/')
-
     return (
         <>
             <MaxWidthWrapper>
@@ -22,7 +17,9 @@ export default async function Page() {
                     </div>    
                 </section>
                 <div data-color-mode="light">
-                    <ProjectForm />
+                    <ProjectForm action={handleCreateProject}>
+                        Enviar <IconCloudUp />
+                    </ProjectForm>
                 </div>
             </MaxWidthWrapper>
         </>

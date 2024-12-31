@@ -1,6 +1,6 @@
 import { Author, Project, Slug } from "@/sanity/types";
-import {z} from "zod";
-import {ErrorsWarnings} from "@/utils/errors-warnings";
+import { ErrorsWarnings } from "@/utils/errors-warnings";
+import { z } from "zod";
 
 export type ProjectCardType = Omit<
   Project,
@@ -24,7 +24,7 @@ export const formSchema = z.object({
       .max(1000, ErrorsWarnings.overCaractersField)
       .trim(),
   videoURL: z.string().url(ErrorsWarnings.invalidURL).optional(),
-  image: z.instanceof(File)
+  image: z.any()
       .refine((file) => {
         const MAX_UPLOAD_SIZE = 1024 * 1024 * 5
         return !file || file.size <= MAX_UPLOAD_SIZE

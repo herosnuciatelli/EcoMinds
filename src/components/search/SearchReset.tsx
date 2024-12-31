@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { IconX } from '@tabler/icons-react'
 import Link from 'next/link'
 
-export function SearchReset() {
+export function SearchReset({action = '/'}: { action: string}) {
     const reset = () => {
         const form = document.querySelector('#searchForm') as HTMLFormElement
 
@@ -13,7 +13,7 @@ export function SearchReset() {
 
     return (
         <Button type='reset' onClick={reset} className="h-12" asChild>
-            <Link href={'/'}>
+            <Link href={action}>
                 <IconX />
             </Link>
         </Button>

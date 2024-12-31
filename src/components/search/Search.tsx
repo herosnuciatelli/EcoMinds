@@ -5,9 +5,9 @@ import { SearchReset } from "./SearchReset"
 import Form from "next/form"
 import { cn } from "@/lib/utils"
 
-function Search({ query, className }: { query?: string, className?: string }) {
+function Search({ query, className, action = '/'}: { query?: string, className?: string, action?: string }) {
     return (
-        <Form action={'/'} className={cn("max-w-lg flex gap-1 justify-center mx-auto", className)} id="searchForm">
+        <Form action={action} className={cn("max-w-lg flex gap-1 justify-center mx-auto", className)} id="searchForm">
             <Input 
                 placeholder="Procurar Projeto"
                 className="border-2 border-r-4 border-b-4 h-12 border-stone-950"
@@ -16,7 +16,7 @@ function Search({ query, className }: { query?: string, className?: string }) {
             />
             {
                 query ?
-                <SearchReset />
+                <SearchReset action={action} />
                 :
                 <Button
                     className="h-12"

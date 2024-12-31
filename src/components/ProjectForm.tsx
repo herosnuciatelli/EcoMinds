@@ -1,27 +1,22 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
-import { useToast } from '@/hooks/use-toast'
 import { Button } from './ui/button'
 import MDEditor from "@uiw/react-md-editor"
-import { redirect } from 'next/navigation'
 
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Textarea } from './ui/textarea'
-import { IconClipboardCopy, IconCloudUp, IconPhotoScan } from '@tabler/icons-react'
+import { IconClipboardCopy, IconPhotoScan } from '@tabler/icons-react'
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from './ui/form'
-import {createPitch} from "@/lib/actions/pitch";
-
+import { ReactNode, useTransition } from 'react'
 import { formSchema } from '@/types/Projects'
-import { createClient } from '@/utils/supabase/client'
 
-import { parseNameToStorage } from '@/lib/utils'
-import { useTransition } from 'react'
-
-export function ProjectForm() {
-    const { toast } = useToast()
+export function ProjectForm({action, children }:{
+    action: (projectData: z.infer<typeof formSchema>) => Promise<void>
+    children: ReactNode
+}) {
     const [isLoading, startTransition] = useTransition()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -34,68 +29,15 @@ export function ProjectForm() {
     })
     const { handleSubmit } = form
 
-    const handleCreateProject = async (projectData: z.infer<typeof formSchema>) => {
-        // TODO: submit content to right ways
+    const handleAction = async (projectData: z.infer<typeof formSchema>) => {
         startTransition(async () => {
-            const supabase = createClient()
-            const { 
-                description,
-                image,
-                pitch,
-                title,
-                projectFile,
-                videoURL
-            } = projectData
-            
-            try {
-    
-                const imageStorageName = parseNameToStorage(image.name)
-                if (imageStorageName) {
-                    const { error } = await supabase.storage.from('images').upload(imageStorageName, image)
-                    if (error) throw new Error(error.message)
-                }
-                
-                const fileStorageName = parseNameToStorage(projectFile?.name)
-                if (fileStorageName && projectFile) {
-                    const { error } = await supabase.storage.from('projects').upload(fileStorageName, projectFile)
-                    if (error) throw new Error(error.message)
-                }
-    
-                const result = await createPitch({ 
-                    description, 
-                    image: imageStorageName, 
-                    pitch, 
-                    title, 
-                    project: imageStorageName, 
-                    videoURL
-                })
-    
-                if (result.status = "SUCCESS") {
-                    toast({
-                        title: projectData.title,
-                        description: "O projeto foi criado com sucesso.",
-                        variant: 'success'
-                    })
-                }
-    
-                setTimeout(() => {
-                    redirect(`/project/${result._id}`)
-                }, 800)
-            } catch (error) {
-                const { message } = error as { message: string }
-    
-                toast({
-                    title: 'Erro: Erro ao armazenar os arquivos.',
-                    description: message,
-                    variant: 'destructive'
-                })
-            }
+            await action(projectData)
         })
     }
 
     return (
         <Form {...form}>
-            <form onSubmit={handleSubmit(handleCreateProject)} className='mx-auto max-w-3xl py-3'>
+            <form onSubmit={handleSubmit(handleAction)} className='mx-auto max-w-3xl py-3'>
                 <div className='py-1.5'>
                     <FormField
                         control={form.control}
@@ -275,7 +217,7 @@ export function ProjectForm() {
                         isLoading={isLoading}
                         disabled={isLoading}
                     >
-                        Enviar <IconCloudUp />
+                        {children}
                     </Button>
                 </div>
             </form>
