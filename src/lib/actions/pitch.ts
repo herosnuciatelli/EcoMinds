@@ -11,10 +11,15 @@ import { client } from "@/sanity/lib/client";
 import { AUTHOR_QUERY } from "@/sanity/lib/queries";
 import { getFilePath } from "@/utils/supabase/actions/storage";
 
-type TCreatePitch = Omit<z.infer<typeof formSchema>, 'image' | 'projectFile'> & {
+type TCreatePitch = Omit<z.infer<typeof formSchema>, 'image' | 'project'> & {
     image?: string
     project?: string
 }
+
+export type TNewProperties = {
+    [k: string]: string | undefined
+}
+
 
 export const createPitch = async (form: TCreatePitch) => {
     const { auth } = await createClient()
@@ -24,14 +29,13 @@ export const createPitch = async (form: TCreatePitch) => {
     if (!user) return parseServerActionResponse({ error: 'Not signed in', status: 'ERROR' })
 
     const author_id = await client.fetch(AUTHOR_QUERY, { user_id: user.id })
-    const { title, description, videoURL, pitch, image, project: projectFile } = form
+    const { title, description, video, pitch, image, project: projectFile } = form
 
     const slug = slugify(title as string, { lower: true, strict: true })
 
     try {
         if (!image) throw new Error('Image was not provided.')
-
-        const imagePath = await getFilePath('images', image)
+        const imagePath = await getFilePath('projects', image)
         const projectFilePath = await getFilePath('projects', projectFile)
 
         if (imagePath?.error) throw new Error('Error: Cannot get image path.')
@@ -40,7 +44,7 @@ export const createPitch = async (form: TCreatePitch) => {
         const project = {
             title,
             description,
-            videoURL,
+            video,
             slug: {
                 _type: slug,
                 current: slug
@@ -54,7 +58,6 @@ export const createPitch = async (form: TCreatePitch) => {
             project: projectFilePath?.path,
             views: 1
         }
-
         const result = await writeClient.create({ _type: 'project', ...project })
 
         return parseServerActionResponse({ ...result, status: 'SUCCESS' })
@@ -64,7 +67,7 @@ export const createPitch = async (form: TCreatePitch) => {
     }
 }
 
-export const patchPitch = async (id: string, properties: TCreatePitch | null) => {
+export const patchPitch = async (id: string, properties: TNewProperties) => {
     const { auth } = await createClient()
     const { data } = await auth.getUser()
     const user = data.user
@@ -72,19 +75,26 @@ export const patchPitch = async (id: string, properties: TCreatePitch | null) =>
     if (!user) return parseServerActionResponse({ error: 'Not signed in', status: 'ERROR' })
     if (!properties) return parseServerActionResponse({ error: 'None Property was provided.', status: 'ERROR' })
 
-    const imagePath = await getFilePath('images', properties.image)
-    const projectFilePath = await getFilePath('projects', properties.project)
-
-    if (imagePath?.error) throw new Error('Error: Cannot get image path.')
-    if (projectFilePath?.error) throw new Error('Error: Cannot get project path.')
-
-    const filteredProperties = Object.fromEntries(
-        Object.entries(properties).filter(([, value]) => value !== null)
-    )
-
     try {
+        const values = {
+            ...properties
+        }
+
+        const imagePath = await getFilePath('projects', properties.image)
+        values.image = imagePath?.path
+
+        const projectFilePath = await getFilePath('projects', properties.project)
+        values.project = projectFilePath?.path
+
+        if (imagePath?.error) throw new Error('Error: Cannot get image path.')
+        if (projectFilePath?.error) throw new Error('Error: Cannot get project path.')
+        
+        const filteredValues = Object.fromEntries(
+            Object.entries(values).filter(([, value]) => value !== null && value !== undefined)
+        )
+
         const result = await writeClient.patch(id).set({
-            ...filteredProperties
+            ...filteredValues
         }).commit()
 
         return parseServerActionResponse({ ...result, status: 'SUCCESS' })

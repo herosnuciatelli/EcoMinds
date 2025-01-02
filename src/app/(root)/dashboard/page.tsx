@@ -4,7 +4,7 @@ import { Search } from "@/components/search/Search";
 import { Button } from "@/components/ui/button";
 import { client } from "@/sanity/lib/client";
 import { PROJECT_QUERY } from "@/sanity/lib/queries";
-import { ProjectCardType } from "@/types/Projects";
+import { ProjectType } from "@/types/Projects";
 import { IconCircleDashedPlus } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -33,12 +33,12 @@ export default async function Page({ searchParams }: {
                         className="mx-0 max-w-none w-full md:max-w-xs"
                         action="/dashboard/"
                     />
-                    <Button className="h-12 w-max" asChild>
-                        <Link href={'/dashboard/create'} className="flex items-center gap-1.5">
+                    <Link href={'/dashboard/create'} >
+                        <Button className="h-12 w-max flex items-center gap-1.5">
                             <IconCircleDashedPlus size={16} />
                             Criar Projeto
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                 </div>
             </section>
             <hr />
@@ -48,7 +48,7 @@ export default async function Page({ searchParams }: {
                 </h2>
                 <div>
                     <ul className="py-3 grid md:grid-cols-2 gap-1">
-                        {posts.length > 0 ? posts.map((post: ProjectCardType) => (
+                        {posts.length > 0 ? posts.map((post: ProjectType) => (
                             <ProjectHorizontalCard
                                 post={post}
                                 key={post._id}

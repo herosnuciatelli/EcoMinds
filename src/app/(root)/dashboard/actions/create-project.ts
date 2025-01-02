@@ -2,47 +2,55 @@
 
 import { toast } from "@/hooks/use-toast"
 import { createPitch } from "@/lib/actions/pitch"
-import { parseNameToStorage } from "@/lib/utils"
+import { isValidPath, parseNameToStorage } from "@/lib/utils"
 import { formSchema } from "@/types/Projects"
 import { createClient } from "@/utils/supabase/client"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
-export const handleCreateProject = async (projectData: z.infer<typeof formSchema>) => {
+export const handleCreateProject = async ({projectData}: { projectData: z.infer<typeof formSchema>}) => {
     const supabase = createClient()
     const {
         description,
         image,
         pitch,
         title,
-        projectFile,
-        videoURL
+        project,
+        video
     } = projectData
 
+    console.log()
+
     try {
+        if (!image) throw new Error('Imagem não foi adicionada.')
 
-        const imageStorageName = parseNameToStorage(image.name)
-        if (imageStorageName) {
-            const { error } = await supabase.storage.from('images').upload(imageStorageName, image)
-            if (error) throw new Error(error.message)
-        }
-
-        const fileStorageName = parseNameToStorage(projectFile?.name)
-        if (fileStorageName && projectFile) {
-            const { error } = await supabase.storage.from('projects').upload(fileStorageName, projectFile)
-            if (error) throw new Error(error.message)
-        }
-
-        const result = await createPitch({
+        const sanityCreateValues = {
             description,
-            image: imageStorageName,
             pitch,
             title,
-            project: imageStorageName,
-            videoURL
-        })
+            video,
+            image: '',
+            project: ''
+        }
 
-        if (result.status = "SUCCESS") {
+        const imageStorageName = `images/${parseNameToStorage(image.name)}`
+
+        if (isValidPath(imageStorageName)) {
+            const { error } = await supabase.storage.from('projects').upload(imageStorageName, image)
+            if (error) throw new Error(error.message)
+            sanityCreateValues.image = imageStorageName
+        }
+
+        const fileStorageName = `files/${parseNameToStorage(project?.name)}`
+        if (isValidPath(fileStorageName) && project) {
+            const { error } = await supabase.storage.from('projects').upload(fileStorageName, project)
+            if (error) throw new Error(error.message)
+            sanityCreateValues.project = fileStorageName
+        }
+
+        const result = await createPitch(sanityCreateValues)
+
+        if (result.status === "SUCCESS") {
             toast({
                 title: projectData.title,
                 description: "O projeto foi criado com sucesso.",

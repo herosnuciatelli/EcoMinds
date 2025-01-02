@@ -12,26 +12,34 @@ import { IconClipboardCopy, IconPhotoScan } from '@tabler/icons-react'
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from './ui/form'
 import { ReactNode, useTransition } from 'react'
 import { formSchema } from '@/types/Projects'
+import { PROJECT_BY_ID_QUERYResult } from '@/sanity/types'
+import { getFileName } from '@/lib/utils'
 
-export function ProjectForm({action, children }:{
-    action: (projectData: z.infer<typeof formSchema>) => Promise<void>
+export function ProjectForm({ action, children, post }: {
+    action: ({projectData, postData}: {
+        projectData: z.infer<typeof formSchema>
+        postData?: PROJECT_BY_ID_QUERYResult
+    }) => Promise<void>
     children: ReactNode
+    post?: PROJECT_BY_ID_QUERYResult
 }) {
     const [isLoading, startTransition] = useTransition()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: '',
-            description: '',
-            pitch: '',
+            title: post?.title || '',
+            description: post?.description || '',
+            pitch: post?.pitch || '',
+            video: post?.video || undefined,
         }
     })
+
     const { handleSubmit } = form
 
     const handleAction = async (projectData: z.infer<typeof formSchema>) => {
         startTransition(async () => {
-            await action(projectData)
+            await action({projectData, postData: post})
         })
     }
 
@@ -42,15 +50,21 @@ export function ProjectForm({action, children }:{
                     <FormField
                         control={form.control}
                         name="title"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className='text-sm font-bold' htmlFor="title">Título</FormLabel>
-                                <FormControl>
-                                    <Input id='title' placeholder='Título do Projeto' {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                        render={({ field }) => {
+                            return (
+                                <FormItem>
+                                    <FormLabel className='text-sm font-bold' htmlFor="title">Título</FormLabel>
+                                    <FormControl>
+                                        <Input 
+                                            id='title' 
+                                            placeholder='Título do Projeto' 
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )
+                        }}
                     />
                 </div>
 
@@ -58,7 +72,7 @@ export function ProjectForm({action, children }:{
                     <FormField
                         control={form.control}
                         name="description"
-                        render={({ field }) => (
+                        render={({field}) => (
                             <FormItem>
                                 <FormLabel className='text-sm font-bold' htmlFor="description">Descrição</FormLabel>
                                 <FormControl>
@@ -78,7 +92,7 @@ export function ProjectForm({action, children }:{
                 <div className='py-1.5'>
                     <FormField
                         control={form.control}
-                        name="videoURL"
+                        name="video"
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel className='text-sm font-bold' htmlFor="videoURL">Vídeo Link [opcional]</FormLabel>
@@ -117,15 +131,13 @@ export function ProjectForm({action, children }:{
                                             textareaProps={{
                                                 placeholder: "Descreva seu projeto."
                                             }}
-                                            value={field.value}
-                                            onChange={(value) => {
-                                                form.setValue('pitch', value || '')
-                                            }}
+                                            {...field}
                                         />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                        )}}
+                            )
+                        }}
                     />
                 </div>
 
@@ -151,13 +163,12 @@ export function ProjectForm({action, children }:{
                                             onClick={() => document.getElementById('image')?.click()}
                                             className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'
                                         >
-                                            <span className='text-sm'>{field.value?.name ? field.value.name : 'Adicionar Imagem.'}</span>
+                                            <span className='text-sm'>{(field.value?.name || post?.image) ? field.value?.name ||  getFileName(post?.image) : 'Adicionar Imagem.'}</span>
 
                                             <IconPhotoScan size={40} stroke={1} />
                                             <FormControl>
                                                 <input
                                                     id='image'
-                                                    placeholder='Este projeto...'
                                                     type='file'
                                                     className='hidden'
                                                     onChange={handleFileInputChange}
@@ -173,14 +184,14 @@ export function ProjectForm({action, children }:{
                     <div>
                         <FormField
                             control={form.control}
-                            name="projectFile"
+                            name="project"
                             render={({ field }) => {
                                 const handleFileInputChange = (
                                     event: React.ChangeEvent<HTMLInputElement>,
                                 ) => {
                                     const files = event.target.files
                                     if (files) {
-                                        form.setValue('projectFile', files[0])
+                                        form.setValue('project', files[0])
                                     }
                                 }
 
@@ -191,7 +202,7 @@ export function ProjectForm({action, children }:{
                                             onClick={() => document.getElementById('projectFile')?.click()}
                                             className='relative h-20 w-full border rounded-md border-dashed border-stone-600 flex items-center px-5 cursor-pointer hover:bg-stone-100 justify-between'
                                         >
-                                            <span className='text-sm'>{field.value?.name ? field.value.name : 'Adicionar Projeto.'}</span>
+                                            <span className='text-sm'>{field.value?.name || post?.project ? field.value?.name || getFileName(post?.project): 'Adicionar Projeto.'}</span>
 
                                             <IconClipboardCopy size={40} stroke={1} />
                                             <FormControl>

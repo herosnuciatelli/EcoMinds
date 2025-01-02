@@ -2,7 +2,7 @@ import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/c
 import { Button, buttonVariants } from "./ui/button"
 import { IconDotsVertical, IconEye, IconPencilPlus } from "@tabler/icons-react"
 import Link from "next/link"
-import { ProjectCardType } from "@/types/Projects"
+import { ProjectType } from "@/types/Projects"
 import { Popover, PopoverTrigger } from "./ui/popover"
 import { cn } from "@/lib/utils"
 import { PopoverContent } from "@radix-ui/react-popover"
@@ -10,9 +10,9 @@ import { DeleteProjectButton } from "./ui/delete-project-button"
 
 function ProjectCard({
     post
-}: { post: ProjectCardType }) {
+}: { post: ProjectType }) {
     return (
-        <Card className="max-w-96 group w-full hover:border-violet-950 transition-all hover:bg-violet-50">
+        <Card className="md:max-w-96 mx-auto group w-full hover:border-violet-950 transition-all hover:bg-violet-50">
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <h3 className="font-semibold text-sm">Sustentabilidade</h3>
@@ -50,7 +50,7 @@ function ProjectCard({
 
 function ProjectHorizontalCard({
     post
-}: { post: ProjectCardType }) {
+}: { post: ProjectType }) {
     return (
         <Card className="w-full flex border-2 border-stone-800 rounded-sm shadow-none items-start">
             <div className="flex flex-1">
@@ -59,7 +59,7 @@ function ProjectHorizontalCard({
                         <CardTitle className="text-xl font-bold hover:underline line-clamp-1">{post.title}</CardTitle>
                     </Link>
                     <CardDescription className="line-clamp-2 h-10">{post.description}</CardDescription>
-                    <h3 className="font-semibold text-sm bg-teal-100 border-2 border-teal-800 px-2 py-1.5 rounded-sm w-max">Sustentabilidade</h3>
+                    <h3 className="font-semibold text-sm bg-violet-100 border-2 border-violet-800 px-2 py-1.5 rounded-sm w-max">Sustentabilidade</h3>
 
                 </CardHeader>
             </div>
@@ -78,7 +78,7 @@ function ProjectHorizontalCard({
                                 </Link>
                             </li>
                             <li>
-                                <DeleteProjectButton id={post._id} />
+                                <DeleteProjectButton id={post._id} image={post.image} />
                             </li>
                         </ul>
                     </PopoverContent>

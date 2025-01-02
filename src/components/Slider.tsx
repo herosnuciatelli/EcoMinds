@@ -3,7 +3,7 @@
 import * as constants from "@/constants";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { Pagination, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -33,7 +33,11 @@ function Slide({ slide }: { slide: StaticImport }) {
 }
 
 export function Slides() {
-    const [width, setWidth] = React.useState(0)
+    const [width, setWidth] = React.useState(900)
+
+    useEffect(() => {
+        setWidth(window.innerWidth)
+    }, [])
     return (
         <Swiper
             modules={[Pagination, Autoplay]}
@@ -50,7 +54,7 @@ export function Slides() {
                 setWidth(window.innerWidth)
             }}
         >
-            {width > 1000 || width === 0 ?
+            {width > 1000 ?
                 slides.map((slide, i) => (
                     <SwiperSlide key={i}>
                         <Slide slide={slide}  />

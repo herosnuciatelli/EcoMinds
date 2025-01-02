@@ -13,15 +13,24 @@ import {
 } from "@/components/ui/alert-dialog"
 import { buttonVariants } from "./button"
 import { IconTrashX } from "@tabler/icons-react"
-import { cn } from "@/lib/utils"
+import { cn, getFileFullName } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { deletePitch } from "@/lib/actions/pitch"
+import { createClient } from "@/utils/supabase/client"
 
 
-export function DeleteProjectButton({ id }: { id: string}) {
+export function DeleteProjectButton({ id, image }: { id: string, image: string | null}) {
 
     const handleDeleteProject = async () => {
         try {
+            const supabase = createClient()
+
+            if (image) {
+                const imageStorageName = getFileFullName(image)
+                const { error } = await supabase.storage.from('projects').remove([`images/${imageStorageName}`])
+                if (error) throw new Error(error.message, { cause: error.cause })
+            }
+
             const result = await deletePitch(id)
 
             if (result.status === 'SUCCESS') {

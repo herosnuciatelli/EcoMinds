@@ -4,6 +4,8 @@ import { client } from "@/sanity/lib/client"
 import { PROJECT_BY_ID_QUERY } from "@/sanity/lib/queries"
 import { PROJECT_BY_ID_QUERYResult } from "@/sanity/types"
 import { notFound } from "next/navigation"
+import { handleUpdateProject } from "@/app/(root)/dashboard/actions/update-project"
+import { IconPencilCheck } from "@tabler/icons-react"
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id
@@ -24,7 +26,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     </div>
                 </section>
                 <div data-color-mode="light">
-                    <ProjectForm />
+                    <ProjectForm action={handleUpdateProject} post={post}>
+                        Salvar <IconPencilCheck />
+                    </ProjectForm>
                 </div>
             </MaxWidthWrapper>
         </>
