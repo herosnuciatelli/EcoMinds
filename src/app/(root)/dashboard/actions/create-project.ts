@@ -60,7 +60,7 @@ export const handleCreateProject = async ({projectData}: { projectData: z.infer<
 
         setTimeout(() => {
             redirect(`/project/${result._id}`)
-        }, 800)
+        }, 300)
     } catch (error) {
         const { message } = error as { message: string }
 

@@ -6,6 +6,8 @@ import Slide2Phone from './slides/slide2-phone.svg'
 import Slide3Phone from './slides/slide3-phone.svg'
 import StyledBackground from './slides/styledBackground.svg'
 
+const MAX_PROJECTS_PER_REQUEST = 1
+
 export {
     Slide1,
     Slide2,
@@ -13,5 +15,6 @@ export {
     Slide1Phone,
     Slide2Phone,
     Slide3Phone,
-    StyledBackground
+    StyledBackground,
+    MAX_PROJECTS_PER_REQUEST
 }

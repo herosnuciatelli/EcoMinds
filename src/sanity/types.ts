@@ -228,6 +228,33 @@ export type PROJECT_OTHERS_QUERYResult = Array<{
 export type AUTHOR_QUERYResult = {
   _id: string;
 } | null;
+// Variable: GET_MORE_PROJECTS
+// Query: *[_type == "project" && _id > $lastId && defined(slug.current) && !defined($search) || title match $search || author -> name match $search] | order(_id) [0...6] {        _id,        title,        slug,        _createdAt,        views,        description,        image    }
+export type GET_MORE_PROJECTSResult = Array<{
+  _id: string;
+  title: null;
+  slug: null;
+  _createdAt: string;
+  views: null;
+  description: null;
+  image: string | null;
+} | {
+  _id: string;
+  title: string | null;
+  slug: null;
+  _createdAt: string;
+  views: null;
+  description: string | null;
+  image: null;
+} | {
+  _id: string;
+  title: string | null;
+  slug: Slug | null;
+  _createdAt: string;
+  views: number | null;
+  description: string | null;
+  image: string | null;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
@@ -237,5 +264,6 @@ declare module "@sanity/client" {
     "\n    *[_type == \"project\" && _id == $id][0]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image,\n        pitch,\n        project,\n        video\n    }\n": PROJECT_BY_ID_QUERYResult;
     "\n    *[_type == \"project\" && _id != $id][0...3]{\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": PROJECT_OTHERS_QUERYResult;
     "\n    *[_type == \"author\" && user_id == $user_id][0]{\n        _id\n    }\n": AUTHOR_QUERYResult;
+    "\n    *[_type == \"project\" && _id > $lastId && defined(slug.current) && !defined($search) || title match $search || author -> name match $search] | order(_id) [0...6] {\n        _id,\n        title,\n        slug,\n        _createdAt,\n        views,\n        description,\n        image\n    }\n": GET_MORE_PROJECTSResult;
   }
 }

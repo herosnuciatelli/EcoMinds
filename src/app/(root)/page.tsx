@@ -1,18 +1,16 @@
 import { MaxWidthWrapper } from "@/components/MaxWidthWrapper";
-import { ProjectCard } from "@/components/ProjectCard";
+import { StandartsProjects } from "@/components/Projects";
 import { Search } from "@/components/search/Search";
 import { Slides } from "@/components/Slider";
-import { client } from "@/sanity/lib/client";
-import { PROJECT_QUERY } from "@/sanity/lib/queries";
-import { ProjectType } from "@/types/Projects";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
 export default async function Home({ searchParams }: {
   searchParams: Promise<{ query?: string }>
 }) {
   const query = (await searchParams).query
   const params = { search: query || null }
-  const posts = await client.fetch(PROJECT_QUERY, params)
-
+  
   return (
     <div>
       <MaxWidthWrapper>
@@ -26,16 +24,10 @@ export default async function Home({ searchParams }: {
           <h2 className="font-bold text-xl">
             {query ? `Resultados de busca para "${query}"`: "Todos os Projetos"}
           </h2>
-          <ul className="py-3 grid justify-center md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {posts.length > 0 ? posts.map((post: ProjectType) => (
-                <ProjectCard 
-                  post={post}
-                  key={post._id}
-                />
-              )): (
-              <p className="font-semibold text-sm">Nenhum projeto encontrado.</p>
-            )}
-          </ul>
+
+          <Suspense fallback={<Skeleton className="h-96 w-full" />}>
+            <StandartsProjects params={params} />
+          </Suspense>
         </section>
       </MaxWidthWrapper>
     </div>

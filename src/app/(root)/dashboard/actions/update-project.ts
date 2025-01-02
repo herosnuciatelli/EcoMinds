@@ -92,7 +92,7 @@ export const handleUpdateProject = async ({
 
         setTimeout(() => {
             redirect(`/project/${result._id}`)
-        }, 800)
+        }, 300)
     } catch (error) {
         const { message, cause } = error as { message: string, cause: string }
 

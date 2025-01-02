@@ -1,7 +1,8 @@
+import { MAX_PROJECTS_PER_REQUEST } from "@/constants";
 import { defineQuery } from "next-sanity";
 
 export const PROJECT_QUERY = defineQuery(`
-    *[_type == "project" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)][0...6] {
+    *[_type == "project" && defined(slug.current) && !defined($search) || title match $search || author -> name match $search | order(_createdAt desc)][0...${MAX_PROJECTS_PER_REQUEST}] {
         _id,
         title,
         slug,
@@ -42,5 +43,17 @@ export const PROJECT_OTHERS_QUERY = defineQuery(`
 export const AUTHOR_QUERY = defineQuery(`
     *[_type == "author" && user_id == $user_id][0]{
         _id
+    }
+`)
+
+export const GET_MORE_PROJECTS = defineQuery(`
+    *[_type == "project" && _id > $lastId && defined(slug.current) && !defined($search) || title match $search || author -> name match $search] | order(_id) [0...${MAX_PROJECTS_PER_REQUEST}] {
+        _id,
+        title,
+        slug,
+        _createdAt,
+        views,
+        description,
+        image
     }
 `)

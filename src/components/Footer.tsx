@@ -3,8 +3,8 @@ import { MaxWidthWrapper } from "./MaxWidthWrapper";
 
 export function Footer() {
     return (
-        <footer className="w-full border-t border-t-stone-300 py-5">
-            <MaxWidthWrapper>
+        <footer className="w-full border-t border-t-stone-300">
+            <MaxWidthWrapper classname="py-5">
                 <div className="flex flex-col md:flex-row items-start justify-between">
                     <div>
                         <h1 className="text-sm font-bold flex gap-1.5 items-center">

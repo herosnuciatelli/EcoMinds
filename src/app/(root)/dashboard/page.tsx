@@ -1,10 +1,9 @@
 import { MaxWidthWrapper } from "@/components/MaxWidthWrapper";
-import { ProjectHorizontalCard } from "@/components/ProjectCard";
+import { HorizontalProjects } from "@/components/Projects";
 import { Search } from "@/components/search/Search";
 import { Button } from "@/components/ui/button";
 import { client } from "@/sanity/lib/client";
 import { PROJECT_QUERY } from "@/sanity/lib/queries";
-import { ProjectType } from "@/types/Projects";
 import { IconCircleDashedPlus } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -47,16 +46,7 @@ export default async function Page({ searchParams }: {
                     {query ? `Resultados de busca para "${query}"` : "Todos os Projetos"}
                 </h2>
                 <div>
-                    <ul className="py-3 grid md:grid-cols-2 gap-1">
-                        {posts.length > 0 ? posts.map((post: ProjectType) => (
-                            <ProjectHorizontalCard
-                                post={post}
-                                key={post._id}
-                            />
-                        )) : (
-                            <p className="font-semibold text-sm">Nenhum projeto encontrado.</p>
-                        )}
-                    </ul>
+                    <HorizontalProjects params={params} />
                 </div>
             </section>
         </MaxWidthWrapper>
