@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: {
           </h2>
 
           <Suspense fallback={<Skeleton className="h-96 w-full" />}>
-            <StandartsProjects params={params} />
+            <StandartsProjects variant="vertical" params={params} />
           </Suspense>
         </section>
       </MaxWidthWrapper>

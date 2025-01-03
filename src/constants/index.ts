@@ -6,7 +6,7 @@ import Slide2Phone from './slides/slide2-phone.svg'
 import Slide3Phone from './slides/slide3-phone.svg'
 import StyledBackground from './slides/styledBackground.svg'
 
-const MAX_PROJECTS_PER_REQUEST = 1
+const MAX_PROJECTS_PER_REQUEST = 6
 
 export {
     Slide1,

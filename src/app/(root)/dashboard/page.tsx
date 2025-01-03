@@ -1,9 +1,7 @@
 import { MaxWidthWrapper } from "@/components/MaxWidthWrapper";
-import { HorizontalProjects } from "@/components/Projects";
+import { StandartsProjects } from "@/components/Projects";
 import { Search } from "@/components/search/Search";
 import { Button } from "@/components/ui/button";
-import { client } from "@/sanity/lib/client";
-import { PROJECT_QUERY } from "@/sanity/lib/queries";
 import { IconCircleDashedPlus } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -12,7 +10,7 @@ export default async function Page({ searchParams }: {
 }) {
     const query = (await searchParams).query
     const params = { search: query || null }
-    const posts = await client.fetch(PROJECT_QUERY, params)
+
     return (
         <MaxWidthWrapper classname="py-3 flex flex-col gap-3">
             <section className="h-32 bg-[url('/project-banner.svg')] rounded-2xl bg-no-repeat w-full my-5 relative bg-cover grid place-items-center">
@@ -46,7 +44,7 @@ export default async function Page({ searchParams }: {
                     {query ? `Resultados de busca para "${query}"` : "Todos os Projetos"}
                 </h2>
                 <div>
-                    <HorizontalProjects params={params} />
+                    <StandartsProjects variant="horizontal" params={params} />
                 </div>
             </section>
         </MaxWidthWrapper>

@@ -18,7 +18,6 @@ import { toast } from "@/hooks/use-toast"
 import { deletePitch } from "@/lib/actions/pitch"
 import { createClient } from "@/utils/supabase/client"
 
-
 export function DeleteProjectButton({ id, image }: { id: string, image: string | null}) {
 
     const handleDeleteProject = async () => {
@@ -38,6 +37,10 @@ export function DeleteProjectButton({ id, image }: { id: string, image: string |
                     title: "Projeto apagado com sucesso.",
                     variant: 'success'
                 })
+
+                setTimeout(() => {
+                    window.location.reload()
+                }, 300)
             }
         } catch (error) {
             console.log(error)
