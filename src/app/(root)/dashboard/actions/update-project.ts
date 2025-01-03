@@ -27,7 +27,7 @@ export const handleUpdateProject = async ({
             Object.entries(projectData).filter(([, value]) => value !== undefined)
         )
 
-        let updatedProperties = compareObjects(postData, filledProperties)
+        const updatedProperties = compareObjects(postData, filledProperties)
 
         const filteredNewValues = Object.fromEntries(
             Object.entries(updatedProperties).filter((value) => value[1]?.newValue !== undefined)
