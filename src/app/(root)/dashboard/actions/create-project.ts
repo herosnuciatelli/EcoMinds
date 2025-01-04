@@ -19,7 +19,7 @@ export const handleCreateProject = async ({projectData}: { projectData: z.infer<
         video
     } = projectData
 
-    console.log()
+    const standartUrl = 'https://exemplo.com'
 
     try {
         if (!image) throw new Error('Imagem não foi adicionada.')
@@ -28,7 +28,7 @@ export const handleCreateProject = async ({projectData}: { projectData: z.infer<
             description,
             pitch,
             title,
-            video,
+            video: video === standartUrl ? undefined : video,
             image: '',
             project: ''
         }
