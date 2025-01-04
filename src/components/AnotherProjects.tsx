@@ -11,7 +11,8 @@ export async function AnotherProjects({id}: {
           <ul className="py-3 grid md:grid-cols-2 lg:grid-cols-3 gap-3">
             {posts.length > 0 ? (
               posts.map((post: ProjectType, index: number) => (
-                <ProjectCard 
+                <ProjectCard
+                  variant="vertical"
                   post={post}
                   key={index}
                 />

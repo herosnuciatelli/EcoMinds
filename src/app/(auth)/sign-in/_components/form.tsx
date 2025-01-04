@@ -65,7 +65,7 @@ export const SignInForm = () => {
           variant: 'success'
         })
         setTimeout(() => {
-          router.push('/')
+          router.push('/dashboard')
         }, 500)
       }
     })
