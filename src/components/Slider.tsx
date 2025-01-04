@@ -10,12 +10,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 const slides = [ 
     constants.Slide1,
     constants.Slide2,
-    constants.Slide3
 ]
 const slidesPhone = [
     constants.Slide1Phone,
     constants.Slide2Phone,
-    constants.Slide3Phone
 ]
 
 function Slide({ slide }: { slide: StaticImport }) {
@@ -53,6 +51,7 @@ export function Slides() {
             onResize={() => {
                 setWidth(window.innerWidth)
             }}
+            className="rounded-2xl"
         >
             {width > 1000 ?
                 slides.map((slide, i) => (

@@ -33,7 +33,7 @@ export function StandartsProjects({ params, variant }: {
     return (
         <>
             <ul className={cn("py-3 grid md:grid-cols-2 gap-1", {
-                'lg:grid-cols-3 gap-3': variant === 'vertical'
+                'lg:grid-cols-3 gap-3 gap-y-5': variant === 'vertical'
             })}>
                 {projects.length > 0 ? projects.map((post: ProjectType) => (
                     <ProjectCard

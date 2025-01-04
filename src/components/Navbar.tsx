@@ -1,7 +1,6 @@
 import { MaxWidthWrapper } from "./MaxWidthWrapper";
 import { buttonVariants } from "./ui/button";
 import Link from "next/link";
-import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -9,14 +8,14 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { IconLogout } from "@tabler/icons-react";
+import { IconLeaf, IconLogout } from "@tabler/icons-react";
 import { SignOutButton } from "./auth/SignOutButton";
 import { NavbarMenu } from "./NavbarMenu";
 
 export function LogoNavbar() {
     return <Link href={'/'}>
-        <h1 className="flex gap-2 items-center font-bold text-lg">
-            <Image src={'/logo.svg'} className="rounded-md" width={30} height={30} alt="logo" priority />
+        <h1 className="flex gap-1.5 items-center font-bold text-lg">
+            <IconLeaf size={25} className="text-violet-600" />
             EcoMinds
         </h1>
     </Link>

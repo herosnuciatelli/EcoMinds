@@ -31,7 +31,7 @@ export function ProjectForm({ action, children, post }: {
             title: post?.title || '',
             description: post?.description || '',
             pitch: post?.pitch || '',
-            video: post?.video || undefined,
+            video: post?.video || 'https://exemplo.com',
         }
     })
 

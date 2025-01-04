@@ -1,6 +1,6 @@
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card"
 import { Button, buttonVariants } from "./ui/button"
-import { IconDotsVertical, IconEye, IconPencilPlus } from "@tabler/icons-react"
+import { IconChevronRight, IconDotsVertical, IconEye, IconPencilPlus } from "@tabler/icons-react"
 import Link from "next/link"
 import { ProjectType } from "@/types/Projects"
 import { Popover, PopoverTrigger } from "./ui/popover"
@@ -14,18 +14,18 @@ export function ProjectCard({
 }: { post: ProjectType, variant: 'vertical' | 'horizontal' }) {
     return (
         <Card className={cn("w-full", {
-            "md:max-w-96 mx-auto group hover:border-violet-950 transition-all hover:bg-violet-50": variant === 'vertical',
-            "flex border-2 border-stone-800 rounded-sm shadow-none items-start": variant === 'horizontal'
+            "mx-auto transition-all hover:scale-105 max-w-96": variant === 'vertical',
+            "flex rounded-sm shadow-none items-start": variant === 'horizontal'
         })}>
             <CardHeader className={cn({
-                "flex flex-col justify-between h-full py-3 flex-1": variant === 'horizontal'
+                "flex flex-col justify-between gap-1.5 h-full py-3 flex-1": variant === 'horizontal'
             })}>
                 {variant === 'vertical' && (
                     <div className="flex justify-between items-center">
                         <h3 className="font-semibold text-sm">Sustentabilidade</h3>
 
                         <div className="flex gap-1.5 items-center">
-                            <IconEye className="stroke-rose-600" />
+                            <IconEye className="stroke-violet-600" />
                             <span className="text-sm font-semibold">{post.views}</span>
                         </div>
                     </div>
@@ -33,11 +33,11 @@ export function ProjectCard({
 
                 <Link
                     className={cn({
-                        "flex flex-col gap-1.5": variant === "vertical"
+                        "flex flex-col gap-1.5 text-center": variant === "vertical"
                     })}
                     href={`/project/${post._id}`}
                 >
-                    <CardTitle className="text-xl font-bold group-hover:underline line-clamp-1">{post.title}</CardTitle>
+                    <CardTitle className="text-xl font-extrabold group-hover:underline line-clamp-1">{post.title}</CardTitle>
                     <CardDescription className={cn({
                         "line-clamp-4 h-20": variant === 'vertical',
                         "line-clamp-2 h-10": variant === 'horizontal'
@@ -64,7 +64,9 @@ export function ProjectCard({
 
                     <CardFooter className="justify-end">
                         <Link href={`/project/${post._id}`}>
-                            <Button>Ver Detalhes</Button>
+                            <Button variant={'default'} className="group">
+                                Ver Detalhes <IconChevronRight className="group-hover:translate-x-1 transition-all"/>
+                            </Button>
                         </Link>
                     </CardFooter>
                 </>
@@ -76,7 +78,7 @@ export function ProjectCard({
                         <PopoverTrigger className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), "my-3 mx-6")}>
                             <IconDotsVertical />
                         </PopoverTrigger>
-                        <PopoverContent className="bg-white w-40 border-2 border-stone-800 py-3 px-1.5 rounded-md">
+                        <PopoverContent className="bg-white w-40 border py-3 px-1.5 rounded-md shadow-md">
                             <ul className="flex flex-col gap-1.5">
                                 <li>
                                     <Link href={`/dashboard/update/${post._id}`} className={cn(buttonVariants({ variant: 'outline' }), "w-full justify-between")}>

@@ -20,6 +20,11 @@ export const handleUpdateProject = async ({
 }) => {
     try {
         if (!postData) throw new Error('Falta de informações.')
+        const standartUrl = 'https://exemplo.com'
+
+        if (projectData.video == standartUrl) {
+            projectData.video = undefined
+        }
 
         const supabase = createClient()
 
@@ -34,7 +39,7 @@ export const handleUpdateProject = async ({
         )
 
         const { image, project } = filteredNewValues
-        
+
         if (isEmptyObject(filteredNewValues)) throw new Error('Atualize alguma informação.', {
             cause: 'Nenhuma informação foi alterada!'
         })

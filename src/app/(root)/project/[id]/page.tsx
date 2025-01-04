@@ -9,9 +9,11 @@ import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { View } from "@/components/View"
 import { AnotherProjects } from "@/components/AnotherProjects"
+import Link from "next/link"
+import { buttonVariants } from "@/components/ui/button"
+import { IconFileTextSpark, IconMovie } from "@tabler/icons-react"
 
 const md = markdownit()
-
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id
@@ -58,14 +60,28 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                             <p className="">Sem detalhes da apresentação</p>
                         )}
                     </div>
-                    <hr className="border-stone-300" />
-                    <div className="py-3">
+
+                    <div className="flex gap-1.5 justify-center">
+                        {post.video && (
+                            <Link href={`${post.video}`} className={buttonVariants({ variant: 'outline' })}>Assitir Video <IconMovie /></Link>
+                        )}
+                        {post.project && (
+                            <Link href={`${post.project}`} className={buttonVariants({ variant: 'outline' })} target="_blank">Ver projeto <IconFileTextSpark /></Link>
+                        )}
+                    </div>
+
+                    <div></div>
+                </section>
+                <hr className="border-stone-300" />
+                <div className="py-3">
+                    <section>
                         <Suspense fallback={<Skeleton className="h-80 my-3" />}>
                             <AnotherProjects id={id} />
                         </Suspense>
-                    </div>
-                    <View id={id} views={post.views || 1} />
-                </section>
+                    </section>
+                </div>
+                <View id={id} views={post.views || 1} />
+
             </MaxWidthWrapper>
 
         </>

@@ -9,8 +9,8 @@ function Search({ query, className, action = '/'}: { query?: string, className?:
     return (
         <Form action={action} className={cn("max-w-lg flex gap-1 justify-center mx-auto", className)} id="searchForm">
             <Input 
-                placeholder="Procurar Projeto"
-                className="border-2 border-r-4 border-b-4 h-12 border-stone-950"
+                placeholder="Procurar Projeto..."
+                className="border border-stone-900 h-12"
                 defaultValue={query}
                 name="query"
             />
