@@ -1,7 +1,7 @@
 'use client'
 
 import { client } from "@/sanity/lib/client";
-import { PROJECT_QUERY } from "@/sanity/lib/queries";
+import { AUTHOR_PROJECTS_QUERY, PROJECT_QUERY } from "@/sanity/lib/queries";
 import { ProjectType } from "@/types/Projects";
 import { useEffect, useState } from "react";
 import { ProjectCard } from "./ProjectCard";
@@ -9,21 +9,31 @@ import { GetMoreProjectsButton } from "./ui/get-more-projects-button";
 import { MAX_PROJECTS_PER_REQUEST } from "@/constants";
 import { cn } from "@/lib/utils";
 
-export function StandartsProjects({ params, variant }: {
+export function StandartsProjects({ params, variant, id }: {
     params: {
         search: string | null;
     }
     variant: 'vertical' | 'horizontal'
+    id?: string
 }) {
     const [projects, setProjects] = useState<ProjectType[]>([])
     const [canGetMoreProjects, setCanGetMoreProjects] = useState<boolean>(false)
 
     const getProjects = async () => {
-        const posts = await client.fetch(PROJECT_QUERY, params)
-        if (posts.length >= MAX_PROJECTS_PER_REQUEST) {
-            setCanGetMoreProjects(true)
+        if (id) {
+            const posts = await client.fetch(AUTHOR_PROJECTS_QUERY, { id })
+            if (posts.length >= MAX_PROJECTS_PER_REQUEST) {
+                setCanGetMoreProjects(true)
+            }
+            
+            return setProjects([...posts])
+        } else {
+            const posts = await client.fetch(PROJECT_QUERY, params)
+            if (posts.length >= MAX_PROJECTS_PER_REQUEST) {
+                setCanGetMoreProjects(true)
+            }
+            setProjects([...posts])
         }
-        setProjects([...posts])
     }
 
     useEffect(() => {

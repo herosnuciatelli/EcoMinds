@@ -24,7 +24,8 @@ export const PROJECT_BY_ID_QUERY = defineQuery(`
         image,
         pitch,
         project,
-        video
+        video,
+        author
     }
 `)
 
@@ -41,13 +42,28 @@ export const PROJECT_OTHERS_QUERY = defineQuery(`
 `)
 
 export const AUTHOR_QUERY = defineQuery(`
-    *[_type == "author" && user_id == $user_id][0]{
-        _id
+    *[_type == "author" && user_id == $user_id || _id == $user_id][0]{
+        _id,
+        name,
+        username,
+        image
     }
 `)
 
 export const GET_MORE_PROJECTS = defineQuery(`
     *[_type == "project" && _id > $lastId && defined(slug.current) && !defined($search) || title match $search || author -> name match $search] | order(_id) [0...${MAX_PROJECTS_PER_REQUEST}] {
+        _id,
+        title,
+        slug,
+        _createdAt,
+        views,
+        description,
+        image
+    }
+`)
+
+export const AUTHOR_PROJECTS_QUERY = defineQuery(`
+    *[_type == "project" && author._ref == $id][0...${MAX_PROJECTS_PER_REQUEST}] {
         _id,
         title,
         slug,

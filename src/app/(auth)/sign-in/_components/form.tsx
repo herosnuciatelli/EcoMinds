@@ -13,6 +13,7 @@ import React from 'react'
 import { IconEye, IconEyeOff } from '@tabler/icons-react'
 import { ErrorWarning } from '@/components/ui/error-message'
 import { ErrorsWarnings } from '@/utils/errors-warnings'
+import Link from 'next/link'
 
 export const formSchema = z.object({
   email: z
@@ -52,7 +53,7 @@ export const SignInForm = () => {
 
       if (error) {
         toast({
-          title: error.message,
+          title: error.message === 'Email not confirmed' ? 'Confirme sua conta atráves do seu email.': error.message,
         })
 
         const form = document.querySelector('#signInForm') as HTMLFormElement
@@ -121,8 +122,8 @@ export const SignInForm = () => {
             </Button>
           </div>
         </form>
+        <h3 className='mt-5 text-center text-sm'>Não possui uma conta? <Link href={'/sign-up'} className='hover:underline text-violet-700 hover:text-violet-600'>Criar conta</Link></h3>
       </div>
-
     </div>
   )
 }

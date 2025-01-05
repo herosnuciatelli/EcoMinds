@@ -1,6 +1,6 @@
 import { MaxWidthWrapper } from "@/components/MaxWidthWrapper"
 import { client } from "@/sanity/lib/client"
-import { PROJECT_BY_ID_QUERY } from "@/sanity/lib/queries"
+import { AUTHOR_QUERY, PROJECT_BY_ID_QUERY } from "@/sanity/lib/queries"
 import { notFound } from "next/navigation"
 
 import markdownit from 'markdown-it'
@@ -12,6 +12,8 @@ import { AnotherProjects } from "@/components/AnotherProjects"
 import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
 import { IconFileTextSpark, IconMovie } from "@tabler/icons-react"
+import { Avatar } from "@/components/ui/avatar"
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
 
 const md = markdownit()
 
@@ -22,8 +24,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
     if (!post) return notFound()
 
-    const parsedContent = md.render(post.pitch || '')
+    const author = await client.fetch(AUTHOR_QUERY, { user_id: `${post.author?._ref}` })
 
+    if (!author) return notFound()
+
+    const parsedContent = md.render(post.pitch || '')
 
     return (
         <>
@@ -36,6 +41,18 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     </div>
                 </section>
                 <section>
+                    <div className="my-5">
+                        <Link href={`/author/${post.author?._ref}`} className="flex gap-1.5 group">
+                            <Avatar className="group-hover:opacity-85 border border-stone-300 h-12 w-12">
+                                <AvatarImage src={author.image ? author.image : '/user-profile.svg'} className={'object-contain'} />
+                                <AvatarFallback>EM</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <h3 className="font-bold">{author.name}</h3>
+                                <span className="opacity-90">{'@' + author.username}</span>
+                            </div>
+                        </Link>
+                    </div>
                     <p className="text-justify text-stone-900">{post.description}</p>
                 </section>
                 <section className="py-10">
@@ -50,7 +67,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     }
 
                     <div className="py-5">
-                        <h3 className="text-xl text-center font-semibold py-5">Detalhes da Apresentação</h3>
+                        <h3 className="text-xl text-center font-semibold py-3">Detalhes da Apresentação</h3>
                         {parsedContent ? (
                             <article
                                 className="flex flex-col gap-5 py-3 text-justify prose break-all"
@@ -69,8 +86,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                             <Link href={`${post.project}`} className={buttonVariants({ variant: 'outline' })} target="_blank">Ver projeto <IconFileTextSpark /></Link>
                         )}
                     </div>
-
-                    <div></div>
                 </section>
                 <hr className="border-stone-300" />
                 <div className="py-3">

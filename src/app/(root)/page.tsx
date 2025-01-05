@@ -10,7 +10,7 @@ export default async function Home({ searchParams }: {
 }) {
   const query = (await searchParams).query
   const params = { search: query || null }
-  
+
   return (
     <div>
       <MaxWidthWrapper>
@@ -22,9 +22,8 @@ export default async function Home({ searchParams }: {
         </section>
         <section className="py-2">
           <h2 className="font-bold text-xl">
-            {query ? `Resultados de busca para "${query}"`: "Todos os Projetos"}
+            {query ? `Resultados de busca para "${query}"` : "Todos os Projetos"}
           </h2>
-
           <Suspense fallback={<Skeleton className="h-96 w-full" />}>
             <StandartsProjects variant="vertical" params={params} />
           </Suspense>

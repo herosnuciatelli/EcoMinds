@@ -28,7 +28,7 @@ export const createPitch = async (form: TCreatePitch) => {
 
     if (!user) return parseServerActionResponse({ error: 'Not signed in', status: 'ERROR' })
 
-    const author_id = await client.fetch(AUTHOR_QUERY, { user_id: user.id })
+    const author_id = await client.fetch(AUTHOR_QUERY, { user_id: `${user.id}`})
     const { title, description, video, pitch, image, project: projectFile } = form
 
     const slug = slugify(title as string, { lower: true, strict: true })
