@@ -15,7 +15,7 @@ export function ProjectCard({
 
     return (
         <Card className={cn("w-full", {
-            "mx-auto transition-all hover:scale-105 max-w-96 group-hover:opacity-50 peer-focus:opacity-100": variant === 'vertical',
+            "mx-auto transition-all md:hover:scale-105 max-w-96 group-hover:opacity-50 peer-focus:opacity-100": variant === 'vertical',
             "flex rounded-sm shadow-none items-start": variant === 'horizontal'
         })}>
             <CardHeader className={cn({
