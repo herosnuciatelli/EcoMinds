@@ -17,7 +17,7 @@ export type ProjectType = Omit<
 export const formSchema = z.object({
   title: z.string()
       .min(1, ErrorsWarnings.emptyField)
-      .max(100, ErrorsWarnings.overCaractersField)
+      .max(40, ErrorsWarnings.overCaractersField)
       .trim(),
   description: z.string()
       .min(1, ErrorsWarnings.emptyField)

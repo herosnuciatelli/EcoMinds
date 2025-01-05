@@ -63,7 +63,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
                     <div className="flex gap-1.5 justify-center">
                         {post.video && (
-                            <Link href={`${post.video}`} className={buttonVariants({ variant: 'outline' })}>Assitir Video <IconMovie /></Link>
+                            <Link href={`${post.video}`} className={buttonVariants({ variant: 'outline' })} target="_blank">Assitir Video <IconMovie /></Link>
                         )}
                         {post.project && (
                             <Link href={`${post.project}`} className={buttonVariants({ variant: 'outline' })} target="_blank">Ver projeto <IconFileTextSpark /></Link>
