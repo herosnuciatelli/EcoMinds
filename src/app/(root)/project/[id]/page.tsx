@@ -50,10 +50,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     }
 
                     <div className="py-5">
-                        <h3 className="text-xl font-semibold">Detalhes da Apresentação</h3>
+                        <h3 className="text-xl text-center font-semibold py-5">Detalhes da Apresentação</h3>
                         {parsedContent ? (
                             <article
-                                className="flex flex-col gap-1.5 py-3 text-justify prose break-all"
+                                className="flex flex-col gap-5 py-3 text-justify prose break-all"
                                 dangerouslySetInnerHTML={{ __html: parsedContent }}
                             />
                         ) : (
