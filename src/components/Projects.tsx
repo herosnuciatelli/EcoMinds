@@ -46,7 +46,7 @@ export function StandartsProjects({ params, variant }: {
                 )}
             </ul>
             {canGetMoreProjects && (
-                <div className="flex justify-center">
+                <div className="flex justify-center mt-5">
                     <GetMoreProjectsButton
                         projects={projects}
                         setProjects={setProjects}
