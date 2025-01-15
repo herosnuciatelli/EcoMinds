@@ -27,17 +27,7 @@ export function getFileName(url: string | undefined | null){
     throw new Error("URL inválida: nenhum arquivo encontrado.");
   }
 
-  const uuidSeparator = file.lastIndexOf('-')
-  
-  let fileName = file.slice(0, uuidSeparator)
-
-  for (const ext of mimeTypesAllowed) {
-    if (fileName.endsWith(ext)) {
-      return  fileName = fileName.replace(ext, `.${ext}`);
-    }
-  }
-
-  return fileName
+  return file
 }
 
 export function getFileFullName(url: string | undefined | null){

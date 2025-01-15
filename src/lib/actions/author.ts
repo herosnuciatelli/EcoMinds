@@ -2,9 +2,10 @@
 
 import { createClient } from "@/utils/supabase/server"
 import { parseServerActionResponse } from "../utils"
-import { writeClient } from "@/sanity/lib/write-client"
 import { ulid } from "ulid"
 import slugify from "slugify"
+import { z } from "zod"
+import { editProfileFormSchema } from "@/components/ui/edit-profile-dialog"
 
 type createAuthor = {
     id: string
@@ -12,24 +13,52 @@ type createAuthor = {
 }
 
 export const createAuthor = async (form: createAuthor) => {
-    const { auth } = await createClient()
-    const { data } = await auth.getUser()
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
     const user = data.user
 
     if (!user) return parseServerActionResponse({ error: 'Not signed in', status: 'ERROR' })
 
     try {
-        const username = slugify(form.name as string, { strict: true})
         const author = {
             id: ulid(),
             name: form.name,
             user_id: form.id,
-            username
+            image: ''
         }
-        const result = await writeClient.create({ _type: 'author', ...author})
+
+        author.image = `https://mzauvmnzsfoocafrhuhf.supabase.co/storage/v1/object/public/avatars/${author.id}/avatar`
+
+        const { data: result, error } = await supabase
+            .from('authors')
+            .insert([
+                author,
+            ])
+            .select()
+
         return parseServerActionResponse({ ...result, status: 'SUCCESS' })
     } catch (error) {
         console.log(error)
         return parseServerActionResponse({ error: JSON.stringify(error), status: "Error" })
     }
+}
+
+export const updateAuthor = async (form: z.infer<typeof editProfileFormSchema>) => {
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+    const user = data.user
+
+    if (!user) return parseServerActionResponse({ error: 'Not signed in', status: 'ERROR' })
+
+    try {
+        if (form.name) {
+            const { error } = await supabase.from('authors').update({ name: form.name }).eq('user_id', user.id)
+            if (error) throw new Error(error.message)
+        }
+        return parseServerActionResponse({ status: 'SUCCESS' })
+    } catch (error) {
+        console.log(error)
+        return parseServerActionResponse({ error: JSON.stringify(error), status: "Error" })
+    }
+    
 }

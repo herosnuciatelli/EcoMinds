@@ -11,17 +11,16 @@ import { Textarea } from './ui/textarea'
 import { IconClipboardCopy, IconPhotoScan } from '@tabler/icons-react'
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from './ui/form'
 import { ReactNode, useTransition } from 'react'
-import { formSchema } from '@/types/Projects'
-import { PROJECT_BY_ID_QUERYResult } from '@/sanity/types'
+import { formSchema, ProjectType } from '@/types/Projects'
 import { getFileName } from '@/lib/utils'
 
 export function ProjectForm({ action, children, post }: {
     action: ({projectData, postData}: {
         projectData: z.infer<typeof formSchema>
-        postData?: PROJECT_BY_ID_QUERYResult
+        postData?: ProjectType
     }) => Promise<void>
     children: ReactNode
-    post?: PROJECT_BY_ID_QUERYResult
+    post?: ProjectType
 }) {
     const [isLoading, startTransition] = useTransition()
 

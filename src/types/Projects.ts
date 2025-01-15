@@ -1,18 +1,18 @@
-import { Author, Project, Slug } from "@/sanity/types";
 import { ErrorsWarnings } from "@/utils/errors-warnings";
 import { z } from "zod";
 
-export type ProjectType = Omit<
-  Project,
-  "author" | "_type" | "_updatedAt" | "_rev" | "title" | "slug" | "views" | "description" | "image" | "pitch"
-> & {
-  author?: Author | null;
-  title: string | null;
-  slug: Slug | null;
-  views: number | null;
-  description: string | null;
+export type ProjectType = {
+  id: string;
+  created_at: string;
+  title: string;
+  author: string;
+  description: string;
   image: string | null;
+  pitch: string;
+  project: string | null;
+  video: string | null;
 };
+
 
 export const formSchema = z.object({
   title: z.string()
@@ -31,9 +31,9 @@ export const formSchema = z.object({
       }, 'O arquivo deve ter menos de 5MB')
       .refine((file) => {
         if (!file?.name) return false
-        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/svg+xml'];
+        const allowedMimeTypes = ['image/jpeg', 'image/png'];
         return allowedMimeTypes.includes(file?.type)
-      }, 'A extensão não é válida. Aceitamos apenas .svg, .png, .jpg')
+      }, 'A extensão não é válida. Aceitamos apenas .png, .jpg')
       .optional(),
   project: z.instanceof(File)
       .refine((file) => {

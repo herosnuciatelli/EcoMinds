@@ -3,9 +3,6 @@ import { MaxWidthWrapper } from "@/components/MaxWidthWrapper";
 import { StandartsProjects } from "@/components/Projects";
 import { Search } from "@/components/search/Search";
 import { Button } from "@/components/ui/button";
-import { client } from "@/sanity/lib/client";
-import { AUTHOR_QUERY } from "@/sanity/lib/queries";
-import { AUTHOR_QUERYResult } from "@/sanity/types";
 import { createClient } from "@/utils/supabase/server";
 import { IconCircleDashedPlus } from "@tabler/icons-react";
 import Link from "next/link";
@@ -17,15 +14,15 @@ export default async function Page({ searchParams }: {
     const query = (await searchParams).query
     const params = { search: query || null }
 
-    const { auth } = await createClient()
+    const supabase = await createClient()
 
-    const auth_id = (await auth.getUser()).data.user?.id
+    const auth_id = (await supabase.auth.getUser()).data.user?.id
 
     if (!auth_id) return notFound()
 
-    const author: AUTHOR_QUERYResult = await client.fetch(AUTHOR_QUERY, { user_id: `${auth_id}` })
+    const { data: authors } = await supabase.from('authors').select('*').eq('user_id', auth_id)
 
-    if (!author) return <FillProfileForm id={auth_id} />
+    if (authors?.length === 0) return <FillProfileForm id={auth_id} />
 
     return (
         <MaxWidthWrapper classname="py-3 flex flex-col gap-3">
@@ -60,7 +57,7 @@ export default async function Page({ searchParams }: {
                     {query ? `Resultados de busca para "${query}"` : "Todos os Projetos"}
                 </h2>
                 <div>
-                    <StandartsProjects variant="horizontal" params={params} id={author._id} />
+                    <StandartsProjects variant="horizontal" params={params} id={authors && authors[0].id} />
                 </div>
             </section>
         </MaxWidthWrapper>

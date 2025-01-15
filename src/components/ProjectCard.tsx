@@ -23,20 +23,15 @@ export function ProjectCard({
             })}>
                 {variant === 'vertical' && (
                     <div className="flex justify-between items-center">
-                        <h3 className="font-semibold text-sm">Sustentabilidade</h3>
-
-                        <div className="flex gap-1.5 items-center">
-                            <IconEye className="stroke-violet-600" />
-                            <span className="text-sm font-semibold">{post.views}</span>
-                        </div>
+                        <h3 className="font-semibold opacity-90 text-xs border border-dashed px-1 py-0.5 rounded-sm border-stone-400">Sustentabilidade</h3>
                     </div>
                 )}
 
                 <Link
                     className={cn({
-                        "flex flex-col gap-1.5 text-center": variant === "vertical"
+                        "flex flex-col gap-1.5": variant === "vertical"
                     })}
-                    href={`/project/${post._id}`}
+                    href={`/project/${post.id}`}
                 >
                     <CardTitle className="text-xl font-extrabold group-hover:underline line-clamp-1">{post.title}</CardTitle>
                     <CardDescription className={cn({
@@ -53,7 +48,7 @@ export function ProjectCard({
 
             {variant === 'vertical' && (
                 <>
-                    <Link href={`/project/${post._id}`}>
+                    <Link href={`/project/${post.id}`}>
                         <div className="p-6 pt-0">
                             <div>
                                 {post.image &&
@@ -64,7 +59,7 @@ export function ProjectCard({
                     </Link>
 
                     <CardFooter className="justify-end">
-                        <Link href={`/project/${post._id}`}>
+                        <Link href={`/project/${post.id}`}>
                             <Button variant={'default'} className="group">
                                 Ver Detalhes <IconChevronRight className="group-hover:translate-x-1 transition-all"/>
                             </Button>
@@ -82,13 +77,13 @@ export function ProjectCard({
                         <PopoverContent className="bg-white w-40 border py-3 px-1.5 rounded-md shadow-md">
                             <ul className="flex flex-col gap-1.5">
                                 <li>
-                                    <Link href={`/dashboard/update/${post._id}`} className={cn(buttonVariants({ variant: 'outline' }), "w-full justify-between")}>
+                                    <Link href={`/dashboard/update/${post.id}`} className={cn(buttonVariants({ variant: 'outline' }), "w-full justify-between")}>
                                         Editar
                                         <IconPencilPlus />
                                     </Link>
                                 </li>
                                 <li>
-                                    <DeleteProjectButton id={post._id} image={post.image} />
+                                    <DeleteProjectButton id={post.id} image={post.image} />
                                 </li>
                             </ul>
                         </PopoverContent>

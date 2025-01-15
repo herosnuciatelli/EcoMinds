@@ -1,16 +1,16 @@
 import { MaxWidthWrapper } from "@/components/MaxWidthWrapper"
 import { ProjectForm } from "@/components/ProjectForm"
-import { client } from "@/sanity/lib/client"
-import { PROJECT_BY_ID_QUERY } from "@/sanity/lib/queries"
-import { PROJECT_BY_ID_QUERYResult } from "@/sanity/types"
 import { notFound } from "next/navigation"
 import { handleUpdateProject } from "@/app/(root)/dashboard/actions/update-project"
 import { IconPencilCheck } from "@tabler/icons-react"
+import { createClient } from "@/utils/supabase/server"
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const id = (await params).id
 
-    const post: PROJECT_BY_ID_QUERYResult = await client.fetch(PROJECT_BY_ID_QUERY, { id })
+    const supabase = await createClient()
+
+    const { data: post } = await supabase.from('projects').select('*').eq('id', id)
 
     if (!post) return notFound()
     return (
@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     </div>
                 </section>
                 <div data-color-mode="light">
-                    <ProjectForm action={handleUpdateProject} post={post}>
+                    <ProjectForm action={handleUpdateProject} post={post[0]}>
                         Salvar <IconPencilCheck />
                     </ProjectForm>
                 </div>

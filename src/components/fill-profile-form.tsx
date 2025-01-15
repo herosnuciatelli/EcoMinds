@@ -4,7 +4,6 @@ import { IconSend } from "@tabler/icons-react";
 import { MaxWidthWrapper } from "./MaxWidthWrapper";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import { z } from "zod";
 import { ErrorsWarnings } from "@/utils/errors-warnings";
 import { useForm } from "react-hook-form";
@@ -13,7 +12,6 @@ import { useTransition } from "react";
 import { createAuthor } from "@/lib/actions/author";
 import { ErrorWarning } from "./ui/error-message";
 import { toast } from "@/hooks/use-toast";
-import { redirect } from "next/navigation";
 
 const formSchema = z.object({
     name: z.string().min(1, ErrorsWarnings.emptyField).max(50, ErrorsWarnings.overCaractersField)

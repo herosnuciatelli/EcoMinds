@@ -11,9 +11,6 @@ import {
 import { IconLeaf, IconLogout, IconUserCircle } from "@tabler/icons-react";
 import { SignOutButton } from "./auth/SignOutButton";
 import { NavbarMenu } from "./NavbarMenu";
-import { client } from "@/sanity/lib/client";
-import { AUTHOR_QUERY } from "@/sanity/lib/queries";
-import { AUTHOR_QUERYResult } from "@/sanity/types";
 import { cn } from "@/lib/utils";
 
 export function LogoNavbar() {
@@ -31,7 +28,8 @@ export async function Navbar() {
     const { data } = await supabase.auth.getUser()
     const auth_id = data.user?.id
 
-    const user_author: AUTHOR_QUERYResult = await client.fetch(AUTHOR_QUERY, { user_id: `${auth_id}` })
+    const { data: user_author } = await supabase.from('authors').select('*').eq('user_id', auth_id)
+    const timestamp = new Date().getTime()
 
     return (
         <header className="border-b">
@@ -42,29 +40,30 @@ export async function Navbar() {
                         {auth_id ?
                             <>
                                 <NavbarMenu />
-                                <div>
-                                    <Popover>
-                                        <PopoverTrigger>
-                                            <Avatar className="hover:opacity-85 border border-stone-300">
-                                                <AvatarImage src={'/user-profile.svg'} className={'object-contain'} />
-                                                <AvatarFallback>EM</AvatarFallback>
-                                            </Avatar>
-                                        </PopoverTrigger>
-                                        <PopoverContent className={'w-52 divide-y flex flex-col gap-3 mr-3 md:mr-0'}>
-                                            <div className="flex flex-col">
-                                                <span className={'text-sm font-bold'}>{user_author?.name}</span>
-                                                <span className="text-xs text-stone-600">{'@' + user_author?.username}</span>
-                                            </div>
+                                {user_author && user_author[0] && (
+                                    <div>
+                                        <Popover>
+                                            <PopoverTrigger>
+                                                <Avatar className="hover:opacity-85 border border-stone-300 h-12 w-12">
+                                                    <AvatarImage src={user_author[0] ? `${user_author[0].image}?nocache=${timestamp}` : '/user-profile.svg'} className={'object-cover'} />
+                                                    <AvatarFallback>EM</AvatarFallback>
+                                                </Avatar>
+                                            </PopoverTrigger>
+                                            <PopoverContent className={'w-52 divide-y flex flex-col gap-3 mr-3 md:mr-0'}>
+                                                <div className="text-center">
+                                                    <span className={'text-sm font-bold'}>{user_author[0].name}</span>
+                                                </div>
 
-                                            <div className={'pt-3 flex flex-col gap-1.5'}>
-                                                <Link href={`/author/${user_author?._id}`} className={cn(buttonVariants({ variant: 'ghost', size: 'sm'}))}><IconUserCircle />Meu Perfil</Link>
-                                                <SignOutButton className={'w-full'} variant={'default'} size={'sm'}>
-                                                    <IconLogout /> Sair
-                                                </SignOutButton>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </div>
+                                                <div className={'pt-3 flex flex-col gap-1.5'}>
+                                                    <Link href={`/author/${user_author[0].id}`} className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}><IconUserCircle />Meu Perfil</Link>
+                                                    <SignOutButton className={'w-full'} variant={'default'} size={'sm'}>
+                                                        <IconLogout /> Sair
+                                                    </SignOutButton>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                )}
                             </>
                             :
                             <Link href={'/sign-in'} className={buttonVariants({ variant: 'default' })}>

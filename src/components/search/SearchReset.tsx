@@ -12,10 +12,10 @@ export function SearchReset({action = '/'}: { action: string}) {
     }
 
     return (
-        <Button type='reset' onClick={reset} className="h-12" asChild>
-            <Link href={action}>
+        <Link href={action}>
+            <Button type='reset' onClick={reset} className="h-12" asChild>
                 <IconX />
-            </Link>
-        </Button>
+            </Button>
+        </Link>
     )
 }
