@@ -19,6 +19,8 @@ import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from '
 import { useState } from "react"
 import { Input } from "./input"
 import { handleUpdateAuthor } from "@/app/(root)/author/[id]/actions/update-profile"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 
 export const editProfileFormSchema = z.object({
@@ -36,7 +38,23 @@ export const editProfileFormSchema = z.object({
     name: z.string().min(1, ErrorsWarnings.emptyField).max(50, ErrorsWarnings.overCaractersField).optional()
 })
 
-export function EditProfileDialog({ avatar, name, email }: { avatar?: string, name: string, email: string }) {
+export function EditProfileDialog({ userProfile, params }: {
+    userProfile: {
+        avatar: any
+        name: any
+        email: string | undefined
+    }
+    params: string | undefined
+}) {
+    const { avatar, name, email } = userProfile || {
+        avatar: null,
+        name: null,
+        email: null
+    }
+    if (!params) {
+        params = 'profile'
+    }
+
     const timestamp = new Date().getTime();
     const [avatarSrc, setAvatarSrc] = useState(avatar + `?nocache=${timestamp}`)
     const [isLoading, setIsLoading] = useState(false)
@@ -44,6 +62,8 @@ export function EditProfileDialog({ avatar, name, email }: { avatar?: string, na
         avatar: false,
         name: false
     })
+
+    const pathname = usePathname()
 
     const form = useForm<z.infer<typeof editProfileFormSchema>>({
         resolver: zodResolver(editProfileFormSchema),
@@ -75,95 +95,131 @@ export function EditProfileDialog({ avatar, name, email }: { avatar?: string, na
                 <DialogTrigger asChild>
                     <li className={cn(buttonVariants({ variant: 'ghost' }), "rounded-none cursor-pointer py-1.5")}><IconSettings />Editar Perfil</li>
                 </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Editar Perfil</DialogTitle>
-                        <DialogDescription>
-                            Você pode salvar as alterarações do seu perfil. Ao clicar no botão Salvar.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <hr />
-                    <div className={'bg-yellow-100 border border-b-2 border-r-2 px-1.5 py-1 border-yellow-500 rounded'}>
-                        <span className="flex gap-1.5 items-center text-xs font-bold"><IconAlertCircle className="text-yellow-900" />Atenção: Ao atualizar o avatar é normal haver um período para mostrar a mudança</span>
-                    </div>
-                    <form onSubmit={form.handleSubmit(handleEditProfile)}>
-                        <FormField
-                            control={form.control}
-                            name="avatar"
-                            render={({ field }) => {
-                                const handleFileInputChange = (
-                                    event: React.ChangeEvent<HTMLInputElement>,
-                                ) => {
-                                    const files = event.target.files
-                                    if (files) {
-                                        form.setValue('avatar', files[0])
-                                        const url = URL.createObjectURL(files[0])
-                                        setAvatarSrc(url)
-                                        console.log(url)
-                                        setCanSaveChanges({ ...canSaveChanges, avatar: true })
-                                    }
-                                }
-                                return (
-                                    <FormItem>
-                                        <FormControl>
-                                            <div className="relative mx-auto w-max">
-                                                <img src={avatarSrc ? avatarSrc : '/user-profile.svg'} className="w-32 h-32 rounded-full border-2 border-violet-800" />
-                                                <Button
-                                                    size={'icon'}
-                                                    variant={'outline'}
-                                                    className="absolute bottom-0 right-0 p-0"
-                                                    onClick={() => document.getElementById('avatar')?.click()}
-                                                    type="button"
-                                                ><IconEdit /></Button>
+                <DialogContent className="max-w-2xl flex py-0 h-[550px]">
+                    <aside className="border-r">
+                        <nav className="w-full">
+                            <h3 className="font-bold py-3 pr-6">Configurações</h3>
+                            <ul className="py-3 w-full flex flex-col gap-1.5">
+                                <li className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'rounded-r-none hover:bg-stone-100', {
+                                    'bg-stone-200 hover:bg-stone-200': params === 'profile'
+                                })}>
+                                    <Link href={pathname + '?settings=profile'} className="w-full text-sm">
+                                        Perfil
+                                    </Link>
+                                </li>
+                                <li className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'rounded-r-none hover:bg-stone-100', {
+                                    'bg-stone-200 hover:bg-stone-200': params === 'account'
+                                })}>
+                                    <Link href={pathname + '?settings=account'} className="w-full text-sm">
+                                        Conta
+                                    </Link>
+                                </li>
+                            </ul>
+                        </nav>
+                    </aside>
+                    {params === 'profile' && (
+                        <div className="flex flex-col gap-3 px-3 py-5">
+                            <DialogHeader>
+                                <DialogTitle>Editar Perfil</DialogTitle>
+                                <DialogDescription>
+                                    Você pode salvar as alterarações do seu perfil. Ao clicar no botão Salvar.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <hr />
+                            <div className={'bg-yellow-100 border border-b-2 border-r-2 px-1.5 py-1 border-yellow-500 rounded'}>
+                                <span className="flex gap-1.5 items-center text-xs font-bold"><IconAlertCircle className="text-yellow-900" />Atenção: Ao atualizar o avatar é normal haver um período para mostrar a mudança</span>
+                            </div>
+                            <form onSubmit={form.handleSubmit(handleEditProfile)}>
+                                <FormField
+                                    control={form.control}
+                                    name="avatar"
+                                    render={() => {
+                                        const handleFileInputChange = (
+                                            event: React.ChangeEvent<HTMLInputElement>,
+                                        ) => {
+                                            const files = event.target.files
+                                            if (files) {
+                                                form.setValue('avatar', files[0])
+                                                const url = URL.createObjectURL(files[0])
+                                                setAvatarSrc(url)
+                                                console.log(url)
+                                                setCanSaveChanges({ ...canSaveChanges, avatar: true })
+                                            }
+                                        }
+                                        return (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <div className="relative mx-auto w-max">
+                                                        <img src={avatarSrc ? avatarSrc : '/user-profile.svg'} className="w-32 h-32 rounded-full border-2 border-violet-800" />
+                                                        <Button
+                                                            size={'icon'}
+                                                            variant={'outline'}
+                                                            className="absolute bottom-0 right-0 p-0"
+                                                            onClick={() => document.getElementById('avatar')?.click()}
+                                                            type="button"
+                                                        ><IconEdit /></Button>
 
-                                                <input id="avatar" type="file" className="hidden" onChange={handleFileInputChange} />
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )
-                            }}
-                        />
+                                                        <input id="avatar" type="file" className="hidden" onChange={handleFileInputChange} />
+                                                    </div>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )
+                                    }}
+                                />
 
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => {
-                                const handleInputChange = (
-                                    event: React.ChangeEvent<HTMLInputElement>,
-                                ) => {
-                                    const newName = event.target.value
+                                <FormField
+                                    control={form.control}
+                                    name="name"
+                                    render={({ field }) => {
+                                        const handleInputChange = (
+                                            event: React.ChangeEvent<HTMLInputElement>,
+                                        ) => {
+                                            const newName = event.target.value
 
-                                    if (newName !== name) {
-                                        setCanSaveChanges({ ...canSaveChanges, name: true })
-                                    } else {
-                                        setCanSaveChanges({ ...canSaveChanges, name: false })
-                                    }
-                                    form.setValue('name', newName)
-                                }
-                                return (
-                                    <FormItem>
-                                        <FormLabel>Nome</FormLabel>
-                                        <FormControl>
-                                            <div>
-                                                <Input onChange={handleInputChange} defaultValue={name} />
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )
-                            }}
-                        />
-                        <hr className="my-3" />
-                        <div className="py-1.5 flex flex-col gap-2">
-                            <FormLabel>Email</FormLabel>
-                            <Input value={email} disabled />
+                                            if (newName !== name) {
+                                                setCanSaveChanges({ ...canSaveChanges, name: true })
+                                            } else {
+                                                setCanSaveChanges({ ...canSaveChanges, name: false })
+                                            }
+                                            form.setValue('name', newName)
+                                        }
+                                        return (
+                                            <FormItem>
+                                                <FormLabel>Nome</FormLabel>
+                                                <FormControl>
+                                                    <div>
+                                                        <Input onChange={handleInputChange} defaultValue={name} />
+                                                    </div>
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )
+                                    }}
+                                />
+                                <hr className="my-3" />
+                                <div className="py-1.5 flex flex-col gap-2">
+                                    <FormLabel>Email</FormLabel>
+                                    <Input value={email} disabled />
+                                </div>
+                                <div className="flex justify-between pt-5">
+                                    <Button size='sm' variant={'ghost'} type="button"><IconLockSquareRounded />Mudar Senha</Button>
+                                    <Button size='sm' variant={'secondary'} isLoading={isLoading} disabled={!(canSaveChanges.avatar || canSaveChanges.name) || isLoading}><IconCircleDashedCheck />Salvar</Button>
+                                </div>
+                            </form>
                         </div>
-                        <div className="flex justify-between pt-5">
-                            <Button size='sm' variant={'ghost'} type="button"><IconLockSquareRounded />Mudar Senha</Button>
-                            <Button size='sm' variant={'secondary'} isLoading={isLoading} disabled={!(canSaveChanges.avatar || canSaveChanges.name) || isLoading}><IconCircleDashedCheck />Salvar</Button>
+                    )}
+                    {params === 'account' && (
+                        <div>
+                            <DialogHeader>
+                                <DialogTitle>Informações de conta</DialogTitle>
+                                <DialogDescription>
+                                    Você pode salvar as alterarações do seu perfil. Ao clicar no botão Salvar.
+                                </DialogDescription>
+                            </DialogHeader>
                         </div>
-                    </form>
+                    )}
+
                 </DialogContent>
             </Dialog>
         </Form>

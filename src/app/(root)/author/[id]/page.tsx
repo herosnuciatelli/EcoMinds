@@ -7,13 +7,24 @@ import { cn } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function Page({ params, searchParams }: { 
+    params: Promise<{ id: string }>
+    searchParams: Promise<{ settings?: string }>
+}) {
     const id = (await params).id
     const supabase = await createClient()
     const user = (await supabase.auth.getUser()).data.user
     const { data: author } = await supabase.from('authors').select('*').eq('id', id)
     if (!author) return notFound()
     const timestamp = new Date().getTime();
+    const query = (await searchParams).settings
+
+    const profile = {
+        avatar: author[0].image,
+        name: author[0].name,
+        email: user?.email
+    }
+
     return (
         <MaxWidthWrapper>
             <section className="py-1.5">
@@ -31,14 +42,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 <ul className="flex gap-1.5">
                     <li className={cn(buttonVariants({ variant: 'ghost' }), "rounded-none cursor-pointer border-b-2 border-stone-800 py-1.5")}>Projetos</li>
                     {user?.id === author[0].user_id && (
-                        <EditProfileDialog avatar={author[0].image} name={author[0].name} email={user?.email!} />
+                        <EditProfileDialog userProfile={profile} params={query}  />
                     )}
                 </ul>
             </nav>
 
-            <section>
+            {/* <section>
                 <StandartsProjects params={{ search: null }} variant="vertical" id={author[0].id} />
-            </section>
+            </section> */}
         </MaxWidthWrapper>
     )
 }

@@ -23,7 +23,7 @@ export function ProjectCard({
             })}>
                 {variant === 'vertical' && (
                     <div className="flex justify-between items-center">
-                        <h3 className="font-semibold opacity-90 text-xs border border-dashed px-1 py-0.5 rounded-sm border-stone-400">Sustentabilidade</h3>
+                        <h3 className="font-semibold opacity-90 text-xs border-2 bg-violet-800 text-white px-1 py-0.5 rounded-sm border-violet-600">Sustentabilidade</h3>
                     </div>
                 )}
 
@@ -41,7 +41,7 @@ export function ProjectCard({
                 </Link>
 
                 {variant === 'horizontal' &&
-                    <h3 className="font-semibold text-sm bg-violet-100 border-2 border-violet-800 px-2 py-1.5 rounded-sm w-max">Sustentabilidade</h3>
+                    <h3 className="font-semibold text-sm bg-violet-800 border-2 border-violet-600 text-white px-2 py-1.5 rounded-sm w-max">Sustentabilidade</h3>
                 }
 
             </CardHeader>
@@ -49,10 +49,10 @@ export function ProjectCard({
             {variant === 'vertical' && (
                 <>
                     <Link href={`/project/${post.id}`}>
-                        <div className="p-6 pt-0">
+                        <div className="p-4 pt-0">
                             <div>
                                 {post.image &&
-                                    <img src={post.image} alt="imagem" className="h-40 rounded-md border object-cover border-stone-950 w-full" />
+                                    <img src={post.image} alt="imagem" className="h-40 rounded-md object-cover w-full" />
                                 }
                             </div>
                         </div>
@@ -60,7 +60,7 @@ export function ProjectCard({
 
                     <CardFooter className="justify-end">
                         <Link href={`/project/${post.id}`}>
-                            <Button variant={'default'} className="group">
+                            <Button variant={'default'} size={'sm'} className="group">
                                 Ver Detalhes <IconChevronRight className="group-hover:translate-x-1 transition-all"/>
                             </Button>
                         </Link>

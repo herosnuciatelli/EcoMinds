@@ -43,7 +43,7 @@ export function StandartsProjects({ params, variant, id }: {
                 .ilike('title', `%${params.search || ''}%`)
                 .limit(6)
 
-            if (!posts) throw new Error('Não há projetos.')
+            if (!posts) return
 
             if (!posts[0]) {
                 setCanGetMoreProjects(false)
