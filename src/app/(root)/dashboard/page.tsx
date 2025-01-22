@@ -26,7 +26,7 @@ export default async function Page({ searchParams }: {
 
     return (
         <MaxWidthWrapper classname="py-3 flex flex-col gap-3">
-            <section className="h-32 bg-[url('/project-banner.svg')] rounded-2xl bg-no-repeat w-full my-5 relative bg-cover grid place-items-center">
+            <section className="h-32 bg-[url('/project-banner.svg')] rounded-2xl bg-no-repeat w-full my-5 relative grid place-items-center">
                 <div>
                     <div className="flex flex-col gap-1.5 items-center">
                         <h2 className="text-2xl lg:text-4xl text-white font-bold bg-stone-950 w-max p-3">

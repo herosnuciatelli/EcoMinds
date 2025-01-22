@@ -16,7 +16,7 @@ import { ErrorsWarnings } from "@/utils/errors-warnings"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from '@/components/ui/form'
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Input } from "./input"
 import { handleUpdateAuthor } from "@/app/(root)/author/[id]/actions/update-profile"
 import Link from "next/link"
@@ -35,7 +35,8 @@ export const editProfileFormSchema = z.object({
             return allowedMimeTypes.includes(file?.type)
         }, 'A extensão não é válida. Aceitamos apenas .png, .jpg')
         .optional(),
-    name: z.string().min(1, ErrorsWarnings.emptyField).max(50, ErrorsWarnings.overCaractersField).optional()
+    name: z.string().min(1, ErrorsWarnings.emptyField).max(50, ErrorsWarnings.overCaractersField).optional(),
+    password: z.string().min(6, 'No mínimo 6 caracteres.').max(50, ErrorsWarnings.overCaractersField).optional()
 })
 
 export function EditProfileDialog({ userProfile, params }: {
@@ -60,15 +61,18 @@ export function EditProfileDialog({ userProfile, params }: {
     const [isLoading, setIsLoading] = useState(false)
     const [canSaveChanges, setCanSaveChanges] = useState({
         avatar: false,
-        name: false
+        name: false,
+        password: false
     })
+    const [canChangePassword, setCanChangePassword] = useState(false)
 
     const pathname = usePathname()
 
     const form = useForm<z.infer<typeof editProfileFormSchema>>({
         resolver: zodResolver(editProfileFormSchema),
         defaultValues: {
-            name
+            name,
+            password: '*******'
         }
     })
 
@@ -88,26 +92,25 @@ export function EditProfileDialog({ userProfile, params }: {
             setIsLoading(false)
         }
     }
-
     return (
         <Form {...form}>
             <Dialog>
                 <DialogTrigger asChild>
                     <li className={cn(buttonVariants({ variant: 'ghost' }), "rounded-none cursor-pointer py-1.5")}><IconSettings />Editar Perfil</li>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl flex py-0 h-[550px]">
-                    <aside className="border-r">
+                <DialogContent className="max-w-2xl md:flex py-0 min-h-[550px]">
+                    <aside className="md:border-r">
                         <nav className="w-full">
                             <h3 className="font-bold py-3 pr-6">Configurações</h3>
                             <ul className="py-3 w-full flex flex-col gap-1.5">
-                                <li className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'rounded-r-none hover:bg-stone-100', {
+                                <li className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'md:rounded-r-none hover:bg-stone-100', {
                                     'bg-stone-200 hover:bg-stone-200': params === 'profile'
                                 })}>
                                     <Link href={pathname + '?settings=profile'} className="w-full text-sm">
                                         Perfil
                                     </Link>
                                 </li>
-                                <li className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'rounded-r-none hover:bg-stone-100', {
+                                <li className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'md:rounded-r-none hover:bg-stone-100', {
                                     'bg-stone-200 hover:bg-stone-200': params === 'account'
                                 })}>
                                     <Link href={pathname + '?settings=account'} className="w-full text-sm">
@@ -171,7 +174,7 @@ export function EditProfileDialog({ userProfile, params }: {
                                 <FormField
                                     control={form.control}
                                     name="name"
-                                    render={({ field }) => {
+                                    render={() => {
                                         const handleInputChange = (
                                             event: React.ChangeEvent<HTMLInputElement>,
                                         ) => {
@@ -198,24 +201,34 @@ export function EditProfileDialog({ userProfile, params }: {
                                     }}
                                 />
                                 <hr className="my-3" />
-                                <div className="py-1.5 flex flex-col gap-2">
-                                    <FormLabel>Email</FormLabel>
-                                    <Input value={email} disabled />
-                                </div>
                                 <div className="flex justify-between pt-5">
-                                    <Button size='sm' variant={'ghost'} type="button"><IconLockSquareRounded />Mudar Senha</Button>
                                     <Button size='sm' variant={'secondary'} isLoading={isLoading} disabled={!(canSaveChanges.avatar || canSaveChanges.name) || isLoading}><IconCircleDashedCheck />Salvar</Button>
                                 </div>
                             </form>
                         </div>
                     )}
                     {params === 'account' && (
-                        <div>
+                        <div className="px-3 py-5">
                             <DialogHeader>
                                 <DialogTitle>Informações de conta</DialogTitle>
                                 <DialogDescription>
-                                    Você pode salvar as alterarações do seu perfil. Ao clicar no botão Salvar.
+                                    Você pode ver as informações da sua conta e alterá-las.
                                 </DialogDescription>
+                                <div className="py-3 flex flex-col gap-1.5">
+                                    <div className="py-1.5 flex flex-col gap-2">
+                                        <FormLabel>Email</FormLabel>
+                                        <Input value={email} disabled />
+                                    </div>
+                                    <hr />
+                                    <div>
+                                        <h3 className="font-semibold text-sm py-3">Deseja Alterar a Senha?</h3>
+                                        <Link href={'/reset-password'}>
+                                            <Button size='sm' variant={'ghost'} className="w-max" type="button"><IconLockSquareRounded />Mudar Senha</Button>
+                                        </Link>
+
+                                    </div>
+
+                                </div>
                             </DialogHeader>
                         </div>
                     )}
