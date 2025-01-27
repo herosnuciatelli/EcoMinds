@@ -55,7 +55,6 @@ export function StandartsProjects({ params, variant, id }: {
             if (posts.length >= MAX_PROJECTS_PER_REQUEST) {
                 setCanGetMoreProjects(true)
             }
-
             return setProjects([...posts])
         } catch (error) {
             const { message } = error as { message: string }
@@ -93,7 +92,6 @@ export function StandartsProjects({ params, variant, id }: {
                         setProjects={setProjects}
                         params={params}
                         setCanGetMoreProjects={setCanGetMoreProjects}
-                        canGetMoreProjects={canGetMoreProjects}
                         author_id={id}
                         setPagination={setPagination}
                         pagination={pagination}

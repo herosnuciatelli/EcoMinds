@@ -16,7 +16,7 @@ import { ErrorsWarnings } from "@/utils/errors-warnings"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from '@/components/ui/form'
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { Input } from "./input"
 import { handleUpdateAuthor } from "@/app/(root)/author/[id]/actions/update-profile"
 import Link from "next/link"
@@ -64,8 +64,6 @@ export function EditProfileDialog({ userProfile, params }: {
         name: false,
         password: false
     })
-    const [canChangePassword, setCanChangePassword] = useState(false)
-
     const pathname = usePathname()
 
     const form = useForm<z.infer<typeof editProfileFormSchema>>({
@@ -98,8 +96,8 @@ export function EditProfileDialog({ userProfile, params }: {
                 <DialogTrigger asChild>
                     <li className={cn(buttonVariants({ variant: 'ghost' }), "rounded-none cursor-pointer py-1.5")}><IconSettings />Editar Perfil</li>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl md:flex py-0 min-h-[550px]">
-                    <aside className="md:border-r">
+                <DialogContent className="max-w-2xl flex flex-col md:flex-row py-0 min-h-[550px]">
+                    <aside className="md:border-r border-b">
                         <nav className="w-full">
                             <h3 className="font-bold py-3 pr-6">Configurações</h3>
                             <ul className="py-3 w-full flex flex-col gap-1.5">

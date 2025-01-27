@@ -8,7 +8,6 @@ import { createClient } from '@/utils/supabase/client'
 import { Dispatch, SetStateAction, useState } from 'react'
 
 export function GetMoreProjectsButton({ 
-    canGetMoreProjects,
     params,
     projects,
     setCanGetMoreProjects,
@@ -21,7 +20,6 @@ export function GetMoreProjectsButton({
     author_id?: string
     setProjects: Dispatch<SetStateAction<ProjectType[]>>
     setCanGetMoreProjects: Dispatch<SetStateAction<boolean>>
-    canGetMoreProjects: boolean
     params: {
         search: string | null;
     }
@@ -42,10 +40,11 @@ export function GetMoreProjectsButton({
             const { data: posts } = await supabase
                 .from('projects')
                 .select('*')
+                .order('id', { ascending: false })
                 .ilike('author', `${author_id || ''}%`)
                 .ilike('title', `%${params.search || ''}%`)
                 .range(pagination.start, pagination.end)
-            
+
             if (posts) {
                 if(!posts[0]) {
                     setCanGetMoreProjects(false)
